@@ -26,15 +26,15 @@ public class UsuarioService {
 
 		this.validate(usuarioDTO);
 
-		LOGGER.info("Salvando usuário");
-		LOGGER.debug("Usuario: {}", usuarioDTO);
+			LOGGER.info("Salvando usuário");
+			LOGGER.debug("Usuario: {}", usuarioDTO);
 
-		Usuario usuario = new Usuario();
-		usuario.setLogin(usuarioDTO.getLogin());
-		usuario.setSenha(usuarioDTO.getSenha());
-		usuario.setUuid(UUID.randomUUID().toString());
+				Usuario usuario = new Usuario();
+				usuario.setLogin(usuarioDTO.getLogin());
+				usuario.setSenha(usuarioDTO.getSenha());
+				usuario.setUuid(UUID.randomUUID().toString());
 
-		usuario = this.iUsuarioRepository.save(usuario);
+			usuario = this.iUsuarioRepository.save(usuario);
 
 		return UsuarioDTO.of(usuario);
 	}
