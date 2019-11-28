@@ -18,7 +18,7 @@ public class FornecedorService {
 
     public FornecedorService(IFornecedorRepository iFornecedorRepository) { this.iFornecedorRepository = iFornecedorRepository; }
 
-    public FornecedorDTO save(FornecedorDTO fornecedorDTO) throws IllegalAccessException {
+    public FornecedorDTO save(FornecedorDTO fornecedorDTO) {
 
         this.validate(fornecedorDTO);
 
@@ -39,29 +39,29 @@ public class FornecedorService {
         return FornecedorDTO.of(fornecedor);
     }
 
-    private void validate(FornecedorDTO fornecedorDTO) throws IllegalAccessException {
+    private void validate(FornecedorDTO fornecedorDTO){
         LOGGER.info("validando fornecedor");
 
         if (fornecedorDTO == null){
-            throw new IllegalAccessException("O fornecedor não pode ser nulo");
+            throw new IllegalArgumentException("O fornecedor não pode ser nulo");
         }
         if (StringUtils.isEmpty(fornecedorDTO.getRazaoSocial())){
-            throw new IllegalAccessException("Razao social não pode ser nulo");
+            throw new IllegalArgumentException("Razao social não pode ser nulo");
         }
         if (StringUtils.isEmpty(fornecedorDTO.getCnpj())){
-            throw new IllegalAccessException("CNPJ não pode ser nulo");
+            throw new IllegalArgumentException("CNPJ não pode ser nulo");
         }
         if (StringUtils.isEmpty(fornecedorDTO.getNomeFantasia())){
-            throw new IllegalAccessException("Nome Fantasia não pode ser nulo");
+            throw new IllegalArgumentException("Nome Fantasia não pode ser nulo");
         }
         if (StringUtils.isEmpty(fornecedorDTO.getEndereco())){
-            throw new IllegalAccessException("Endereço não pode ser nullo");
+            throw new IllegalArgumentException("Endereço não pode ser nullo");
         }
         if (StringUtils.isEmpty(fornecedorDTO.getTelefone())){
-            throw new IllegalAccessException("Telefone não pode ser nullo");
+            throw new IllegalArgumentException("Telefone não pode ser nullo");
         }
         if (StringUtils.isEmpty(fornecedorDTO.getEmail())){
-            throw new IllegalAccessException("E-mail não pode ser nullo");
+            throw new IllegalArgumentException("E-mail não pode ser nullo");
         }
     }
 
@@ -78,7 +78,7 @@ public class FornecedorService {
     }
 
 
-    public FornecedorDTO update(FornecedorDTO fornecedorDTO, Long id) throws IllegalAccessException {
+    public FornecedorDTO update(FornecedorDTO fornecedorDTO, Long id){
         Optional<Fornecedor> fornecedorExistenteOptional = this.iFornecedorRepository.findById(id);
 
             if (fornecedorExistenteOptional.isPresent()){
@@ -100,7 +100,7 @@ public class FornecedorService {
                 return FornecedorDTO.of(fornecedorExistente);
             }
 
-            throw new IllegalAccessException(String.format("id %s nao existente", id));
+            throw new IllegalArgumentException(String.format("id %s nao existente", id));
     }
 
     public void delete(Long id){
@@ -108,5 +108,17 @@ public class FornecedorService {
         LOGGER.info("Deletando Fornecedor pelo id: [{}]",id);
 
         this.iFornecedorRepository.deleteById(id);
+    }
+
+    public Fornecedor forneId(Long id){
+        Optional<Fornecedor> fornecedorOptional = this.iFornecedorRepository.findById(id);
+
+        if (fornecedorOptional.isPresent()){
+            return fornecedorOptional.get();
+        }
+
+        throw new IllegalArgumentException(String.format("id %s fornecedor nao existe", fornecedorOptional.get()));
+
+
     }
 }

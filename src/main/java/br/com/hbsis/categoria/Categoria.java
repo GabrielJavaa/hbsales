@@ -2,6 +2,7 @@ package br.com.hbsis.categoria;
 
 
 import br.com.hbsis.fornecedor.Fornecedor;
+import org.omg.CORBA.INTERNAL;
 
 import javax.persistence.*;
 
@@ -19,12 +20,13 @@ public class Categoria {
     private String nomeCategoria;
 
 
-    @Column(name = "fornecedor_categoria", unique = true, nullable = false, length = 40)
-    private String fornecedorCategoria;
+    @ManyToOne
+    @JoinColumn(name= "fornecedor_categoria", referencedColumnName = "id")
+    private Fornecedor fornecedorCategoria;
 
 
     @Column(name = "codigo_categoria", unique = true, nullable = false, length = 40)
-    private String codigoCategoria;
+    private Integer codigoCategoria;
 
 
     public Categoria() {
@@ -46,22 +48,30 @@ public class Categoria {
         this.nomeCategoria = nomeCategoria;
     }
 
-    public String getFornecedorCategoria() {
+    public Fornecedor getFornecedorCategoria() {
         return fornecedorCategoria;
     }
 
-    public void setFornecedorCategoria(String fornecedorCategoria) {
+    public void setFornecedorCategoria(Fornecedor fornecedorCategoria) {
         this.fornecedorCategoria = fornecedorCategoria;
     }
 
-    public String getCodigoCategoria() {
+    public Integer getCodigoCategoria() {
         return codigoCategoria;
     }
 
-    public void setCodigoCategoria(String codigoCategoria) {
+    public void setCodigoCategoria(Integer codigoCategoria) {
         this.codigoCategoria = codigoCategoria;
     }
 
 
-
+    @Override
+    public String toString() {
+        return "categoria{" +
+                "id=" + id +
+                ", nome_categoria='" + nomeCategoria + '\'' +
+                ", fornecedor_categoria='" + fornecedorCategoria + '\'' +
+                ", codigo_categoria='" + codigoCategoria + '\'' +
+                '}';
+    }
 }

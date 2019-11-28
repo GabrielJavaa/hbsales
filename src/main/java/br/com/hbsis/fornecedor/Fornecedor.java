@@ -83,4 +83,16 @@ public class Fornecedor {
 
         this.Email = email;
     }
+    @Override
+    public String toString() {
+        return "fornecedor{" +
+                "id=" + id +
+                ", razao_social='" + RazaoSocial + '\'' +
+                ", cnpj_id='" + CNPJ + '\'' +
+                ", nome_fantasia='" + NomeFantasia + '\'' +
+                ", endereco='" + Endereco + '\'' +
+                ", telefone='" + Telefone + '\'' +
+                ", email='" + Email + '\'' +
+                '}';
+    }
 }
