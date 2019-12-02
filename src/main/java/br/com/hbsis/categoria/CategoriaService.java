@@ -3,20 +3,25 @@ package br.com.hbsis.categoria;
 
 import br.com.hbsis.fornecedor.Fornecedor;
 import br.com.hbsis.fornecedor.FornecedorService;
+import com.opencsv.CSVReader;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
-public class CategoriaService {
+public class CategoriaService<ExportCSV> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CategoriaService.class);
 
     private final ICategoriaRepository iCategoriaRepository;
     private final FornecedorService fornecedorService;
+
 
     public CategoriaService(ICategoriaRepository iCategoriaRepository, FornecedorService fornecedorService){
         this.iCategoriaRepository = iCategoriaRepository;
@@ -99,7 +104,12 @@ public class CategoriaService {
 
         this.iCategoriaRepository.deleteById(id);
     }
+    /* METODO PARA PERCORRER A LISTA*/
 
-
+    public List<Categoria>categoriaList(){
+        List<Categoria> categorias;
+        categorias= this.iCategoriaRepository.findAll();
+        return categorias;
+    }
 
 }
