@@ -3,13 +3,18 @@ package br.com.hbsis.categoria;
 
 import br.com.hbsis.fornecedor.Fornecedor;
 import br.com.hbsis.fornecedor.FornecedorService;
-import com.opencsv.CSVReader;
+import br.com.hbsis.fornecedor.IFornecedorRepository;
+import com.opencsv.CSVWriter;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -21,26 +26,30 @@ public class CategoriaService<ExportCSV> {
 
     private final ICategoriaRepository iCategoriaRepository;
     private final FornecedorService fornecedorService;
+    private IFornecedorRepository iFornecedorRepository = null;
 
 
     public CategoriaService(ICategoriaRepository iCategoriaRepository, FornecedorService fornecedorService){
         this.iCategoriaRepository = iCategoriaRepository;
         this.fornecedorService = fornecedorService;
+        this.iFornecedorRepository = iFornecedorRepository;
 
     }
 
     public CategoriaDTO save(CategoriaDTO categoriaDTO) {
 
-        Fornecedor fornecedorService = this.fornecedorService.forneId(categoriaDTO.getFornecedorCategoria().getId());
+        Optional<Fornecedor> fornecedorOptional = this.fornecedorService.findOptionalById(categoriaDTO.getFornecedorCategoria().getId());
 
         this.validate(categoriaDTO);
 
         LOGGER.info("Salvando Categorias");
         LOGGER.debug("Categoria: {}", categoriaDTO);
 
+        Fornecedor fornecedor = fornecedorOptional.get();
+
             Categoria categoria = new Categoria();
             categoria.setNomeCategoria(categoriaDTO.getNomeCategoria());
-            categoria.setFornecedorCategoria(fornecedorService);
+            categoria.setFornecedorCategoria(fornecedor);
             categoria.setCodigoCategoria(categoriaDTO.getCodigoCategoria());
             categoria= this.iCategoriaRepository.save(categoria);
             return CategoriaDTO.of(categoria);
@@ -104,12 +113,77 @@ public class CategoriaService<ExportCSV> {
 
         this.iCategoriaRepository.deleteById(id);
     }
-    /* METODO PARA PERCORRER A LISTA*/
 
-    public List<Categoria>categoriaList(){
-        List<Categoria> categorias;
-        categorias= this.iCategoriaRepository.findAll();
+
+    public List<Categoria> categoriaList(Writer writer){
+        List<Categoria> categorias = new ArrayList<>();
+        categorias = this.iCategoriaRepository.findAll();
         return categorias;
     }
+
+    public void escrever(Writer writer) {
+        CSVWriter csvWriter = new CSVWriter(writer,
+                CSVWriter.DEFAULT_SEPARATOR,
+                CSVWriter.NO_QUOTE_CHARACTER,
+                CSVWriter.DEFAULT_ESCAPE_CHARACTER,
+                CSVWriter.DEFAULT_LINE_END
+        );
+        String[] dados = {"id;nomeCategoria;fornecedorCategoria;codigoCategoria"};
+
+        csvWriter.writeNext(dados);
+
+        List<Categoria> categoriaList = this.iCategoriaRepository.findAll();
+        for (Categoria categoria : categoriaList) {
+            csvWriter.writeNext(new String[]{
+                    categoria.getId() + ";" +
+                    categoria.getNomeCategoria() + ";" +
+                    categoria.getFornecedorCategoria().getRazaoSocial() + ";" +
+                    categoria.getCodigoCategoria() + ";"
+            });
+
+        }
+    }
+
+    public void importcsv(MultipartFile csvfile) throws IOException {
+
+
+        String linha="";
+        String esc=";";
+
+        try{BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(csvfile.getInputStream()));
+            linha= bufferedReader.readLine();
+
+            while ((linha = bufferedReader.readLine()) !=null) {
+
+                String[] country = linha.split(esc);
+
+
+
+                Categoria categoria = new Categoria();
+                Optional<Fornecedor> fornecedorOptional = this.fornecedorService.forneId(country[2]);
+                System.out.println(fornecedorOptional.get());
+
+                if (fornecedorOptional.isPresent()) {
+                    Fornecedor fornecedor = fornecedorOptional.get();
+
+                    categoria.setNomeCategoria(country[1]);
+                    categoria.setCodigoCategoria(Integer.parseInt(country[3]));
+                    categoria.setFornecedorCategoria(fornecedor);
+
+                    this.iCategoriaRepository.save(categoria);
+                } else {
+                    throw new IllegalArgumentException(String.format("id %s nao existe",Long.parseLong(country[0])));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
 
 }

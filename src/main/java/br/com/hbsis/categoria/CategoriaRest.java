@@ -1,16 +1,13 @@
 package br.com.hbsis.categoria;
 
-import com.opencsv.CSVWriter;
-import com.opencsv.CSVWriterBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
-import java.util.List;
+import java.io.IOException;
 
 
 @RestController
@@ -20,8 +17,13 @@ public class CategoriaRest {
 
     private final CategoriaService categoriaService;
 
+    private final ICategoriaRepository iCategoriaRepository;
+
     @Autowired
-    public CategoriaRest(CategoriaService categoriaService){this.categoriaService = categoriaService;}
+    public CategoriaRest(CategoriaService categoriaService, ICategoriaRepository iCategoriaRepository){
+        this.categoriaService = categoriaService;
+        this.iCategoriaRepository = iCategoriaRepository;
+    }
 
     @PostMapping
     public CategoriaDTO save(@RequestBody CategoriaDTO categoriaDTO){
@@ -52,30 +54,19 @@ public class CategoriaRest {
 
         this.categoriaService.delete(id);
     }
-    @GetMapping("/export-csv")
-    public void exportCSV(HttpServletResponse response) throws Exception{
 
-        String file = "categoria.csv";
 
-        response.setContentType("text/csv");
-        response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
-                "attachment; file=\""+ file + "\"");
 
-        /*Criando instancia para gravar uma lista de categorias no arquivo CSV*/
+    @GetMapping("/export.csv")
+    public void exportCSV(HttpServletResponse file) throws Exception {
+        categoriaService.escrever(file.getWriter());
 
-        PrintWriter mostrar = response.getWriter();
-        CSVWriter csvWriter = (CSVWriter) new CSVWriterBuilder(mostrar)
-                .withEscapeChar(CSVWriter.DEFAULT_ESCAPE_CHARACTER)
-                .withSeparator(CSVWriter.DEFAULT_SEPARATOR)
-                .withLineEnd(CSVWriter.DEFAULT_LINE_END)
-                .build();
-
-        /*listando todas as minha categorias */
-
-        String headerCSV []= {"id","nomeCategoria", "fornecedorCategoria", "codigoCategoria", "unidadeCategoria" };
-        csvWriter.writeNext(headerCSV);
-
-        List<Categoria> categorias = this.categoriaService.categoriaList();
 
     }
+    @PostMapping(value ="/import" , consumes ="multipart/form-data" )
+    public void importCSV(@RequestParam ("file") MultipartFile csvfile) throws IOException {
+        this.categoriaService.importcsv(csvfile);
+
+    }
+
 }

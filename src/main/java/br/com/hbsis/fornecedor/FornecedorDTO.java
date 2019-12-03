@@ -30,7 +30,7 @@ public class FornecedorDTO {
         return new FornecedorDTO(
             fornecedor.getId(),
             fornecedor.getRazaoSocial(),
-            fornecedor.getCNPJ(),
+            fornecedor.getCnpj(),
             fornecedor.getNomeFantasia(),
             fornecedor.getEndereco(),
             fornecedor.getTelefone(),
