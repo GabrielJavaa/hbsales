@@ -1,10 +1,8 @@
 package br.com.hbsis.categoria;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,7 +26,7 @@ public class CategoriaRest {
     }
 
     @PostMapping
-    public CategoriaDTO save(@RequestBody CategoriaDTO categoriaDTO) throws IllegalAccessException {
+    public CategoriaDTO save(@RequestBody CategoriaDTO categoriaDTO){
         LOGGER.info("Recebendo solicitação de persistencia do Produto...");
         LOGGER.debug("Payaload {}", categoriaDTO);
 
@@ -36,14 +34,14 @@ public class CategoriaRest {
     }
 
     @GetMapping("/{id}")
-    public CategoriaDTO find(@PathVariable ("id") Long id) throws IllegalAccessException {
+    public CategoriaDTO find(@PathVariable ("id") Long id){
         LOGGER.info("Recebendo o find by id... id: [{}]", id);
 
         return this.categoriaService.findById(id);
     }
 
     @PutMapping("/{id}")
-    public CategoriaDTO update(@PathVariable("id") Long id, @RequestBody CategoriaDTO categoriaDTO) throws IllegalAccessException {
+    public CategoriaDTO update(@PathVariable("id") Long id, @RequestBody CategoriaDTO categoriaDTO){
         LOGGER.info("Alterando dados da categoria pelo id: {}", id);
         LOGGER.debug("Payaload {}", categoriaDTO);
 
@@ -56,6 +54,7 @@ public class CategoriaRest {
 
         this.categoriaService.delete(id);
     }
+
 
 
     @GetMapping("/export.csv")

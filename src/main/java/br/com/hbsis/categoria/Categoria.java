@@ -1,9 +1,7 @@
 package br.com.hbsis.categoria;
 
-
 import br.com.hbsis.fornecedor.Fornecedor;
 import com.opencsv.bean.CsvBindByPosition;
-
 
 import javax.persistence.*;
 

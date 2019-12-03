@@ -13,17 +13,17 @@ public class Fornecedor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "razao_social", unique = true, length = 60)
-    private String RazaoSocial;
+    private String razaoSocial;
     @Column(name = "cnpj_id", unique = true, length = 20)
-    private String CNPJ;
+    private String cnpj;
     @Column(name = "nome_fantasia", unique = false, length = 60)
-    private String NomeFantasia;
+    private String nomeFantasia;
     @Column(name = "endereco", unique = false, length = 60)
-    private String Endereco;
+    private String endereco;
     @Column(name = "telefone", unique = true, length = 11)
-    private String Telefone;
+    private String telefone;
     @Column(name = "email", unique = true, length = 30)
-    private String Email;
+    private String email;
 
 
     public Long getId() {
@@ -31,68 +31,68 @@ public class Fornecedor {
     }
 
     public String getRazaoSocial() {
-        return RazaoSocial;
+        return razaoSocial;
     }
 
     public void setRazaoSocial(String razaoSocial) {
-        this.RazaoSocial = razaoSocial;
+        this.razaoSocial = razaoSocial;
     }
 
-    public String getCNPJ() {
-        return CNPJ;
+    public String getCnpj() {
+        return cnpj;
     }
 
-    public void setCNPJ(String CNPJ) {
-        this.CNPJ = CNPJ;
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
     }
 
     public String getNomeFantasia() {
-        return NomeFantasia;
+        return nomeFantasia;
     }
 
     public void setNomeFantasia(String nomeFantasia) {
 
-        this.NomeFantasia = nomeFantasia;
+        this.nomeFantasia = nomeFantasia;
     }
 
     public String getEndereco() {
 
-        return Endereco;
+        return endereco;
     }
 
     public void setEndereco(String endereco) {
 
-        this.Endereco = endereco;
+        this.endereco = endereco;
     }
 
     public String getTelefone() {
 
-        return Telefone;
+        return telefone;
     }
 
     public void setTelefone(String telefone) {
 
-        this.Telefone = telefone;
+        this.telefone = telefone;
     }
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     public void setEmail(String email) {
 
-        this.Email = email;
+        this.email = email;
     }
     @Override
     public String toString() {
         return "fornecedor{" +
                 "id=" + id +
-                ", razao_social='" + RazaoSocial + '\'' +
-                ", cnpj_id='" + CNPJ + '\'' +
-                ", nome_fantasia='" + NomeFantasia + '\'' +
-                ", endereco='" + Endereco + '\'' +
-                ", telefone='" + Telefone + '\'' +
-                ", email='" + Email + '\'' +
+                ", razao_social='" + razaoSocial + '\'' +
+                ", cnpj_id='" + cnpj + '\'' +
+                ", nome_fantasia='" + nomeFantasia + '\'' +
+                ", endereco='" + endereco + '\'' +
+                ", telefone='" + telefone + '\'' +
+                ", email='" + email + '\'' +
                 '}';
     }
 }

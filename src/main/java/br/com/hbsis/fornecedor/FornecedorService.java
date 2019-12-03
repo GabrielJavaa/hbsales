@@ -28,7 +28,7 @@ public class FornecedorService {
         Fornecedor fornecedor = new Fornecedor();
 
         fornecedor.setRazaoSocial(fornecedorDTO.getRazaoSocial());
-        fornecedor.setCNPJ(fornecedorDTO.getCnpj());
+        fornecedor.setCnpj(fornecedorDTO.getCnpj());
         fornecedor.setNomeFantasia(fornecedorDTO.getNomeFantasia());
         fornecedor.setEndereco(fornecedorDTO.getEndereco());
         fornecedor.setTelefone(fornecedorDTO.getTelefone());
@@ -77,6 +77,17 @@ public class FornecedorService {
         throw new IllegalArgumentException(String.format("id %s não existente", id));
     }
 
+    public Optional<Fornecedor> findOptionalById(Long id){
+
+        Optional<Fornecedor> fornecedorOptional = this.iFornecedorRepository.findById(id);
+
+        if (fornecedorOptional.isPresent()){
+            return fornecedorOptional;
+        }
+
+        throw new IllegalArgumentException(String.format("id %s não existente", id));
+    }
+
 
     public FornecedorDTO update(FornecedorDTO fornecedorDTO, Long id){
         Optional<Fornecedor> fornecedorExistenteOptional = this.iFornecedorRepository.findById(id);
@@ -89,7 +100,7 @@ public class FornecedorService {
                 LOGGER.debug("Fornecedor Existente:{}", fornecedorExistente);
 
                 fornecedorExistente.setRazaoSocial(fornecedorDTO.getRazaoSocial());
-                fornecedorExistente.setCNPJ(fornecedorDTO.getCnpj());
+                fornecedorExistente.setCnpj(fornecedorDTO.getCnpj());
                 fornecedorExistente.setNomeFantasia(fornecedorDTO.getNomeFantasia());
                 fornecedorExistente.setEndereco(fornecedorDTO.getEndereco());
                 fornecedorExistente.setTelefone(fornecedorDTO.getTelefone());
@@ -110,14 +121,14 @@ public class FornecedorService {
         this.iFornecedorRepository.deleteById(id);
     }
 
-    public Fornecedor forneId(Long id){
-        Optional<Fornecedor> fornecedorOptional = this.iFornecedorRepository.findById(id);
+    public Optional <Fornecedor> forneId(String rz){
+        Optional<Fornecedor> fornecedorOptional = this.iFornecedorRepository.findByRazaoSocial(rz);
 
         if (fornecedorOptional.isPresent()){
-            return fornecedorOptional.get();
+            return fornecedorOptional;
         }
 
-        throw new IllegalArgumentException(String.format("id %s fornecedor nao existe", fornecedorOptional.get()));
+        throw new IllegalArgumentException(String.format("id %s fornecedor nao existe"));
 
 
     }
