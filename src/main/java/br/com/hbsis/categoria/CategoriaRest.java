@@ -4,7 +4,12 @@ package br.com.hbsis.categoria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 
 @RestController
@@ -14,8 +19,13 @@ public class CategoriaRest {
 
     private final CategoriaService categoriaService;
 
+    private final ICategoriaRepository iCategoriaRepository;
+
     @Autowired
-    public CategoriaRest(CategoriaService categoriaService){this.categoriaService = categoriaService;}
+    public CategoriaRest(CategoriaService categoriaService, ICategoriaRepository iCategoriaRepository){
+        this.categoriaService = categoriaService;
+        this.iCategoriaRepository = iCategoriaRepository;
+    }
 
     @PostMapping
     public CategoriaDTO save(@RequestBody CategoriaDTO categoriaDTO) throws IllegalAccessException {
@@ -46,4 +56,18 @@ public class CategoriaRest {
 
         this.categoriaService.delete(id);
     }
+
+
+    @GetMapping("/export.csv")
+    public void exportCSV(HttpServletResponse file) throws Exception {
+        categoriaService.escrever(file.getWriter());
+
+
+    }
+    @PostMapping(value ="/import" , consumes ="multipart/form-data" )
+    public void importCSV(@RequestParam ("file") MultipartFile csvfile) throws IOException {
+        this.categoriaService.importcsv(csvfile);
+
+    }
+
 }
