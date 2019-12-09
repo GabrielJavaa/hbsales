@@ -43,6 +43,8 @@ public class FornecedorDTO {
 
     public Long getId() { return Id; }
 
+    public void setId(Long id) { Id = id; }
+
     public String getRazaoSocial() { return razaoSocial; }
 
     public void setRazaoSocial(String razaoSocial) { this.razaoSocial = razaoSocial; }

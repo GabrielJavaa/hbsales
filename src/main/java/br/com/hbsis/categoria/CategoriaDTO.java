@@ -37,13 +37,9 @@ public class CategoriaDTO {
         this.nomeCategoria = nomeCategoria;
     }
 
-    public Fornecedor getFornecedorCategoria() {
-        return fornecedorCategoria;
-    }
+    public Fornecedor getFornecedorCategoria() { return fornecedorCategoria; }
 
-    public void setFornecedorCategoria(Fornecedor fornecedorCategoria) {
-        this.fornecedorCategoria = fornecedorCategoria;
-    }
+    public void setFornecedorCategoria(Fornecedor fornecedorCategoria) { this.fornecedorCategoria = fornecedorCategoria; }
 
     public Integer getCodigoCategoria() {
         return codigoCategoria;
@@ -51,5 +47,15 @@ public class CategoriaDTO {
 
     public void setCodigoCategoria(Integer codigoCategoria) {
         this.codigoCategoria = codigoCategoria;
+    }
+
+    @Override
+    public String toString() {
+        return "CategoriaDTO{" +
+                "id=" + id +
+                ", nomeCategoria='" + nomeCategoria + '\'' +
+                ", fornecedorCategoria='" + fornecedorCategoria + '\'' +
+                ", codigoCategoria='" + codigoCategoria + '\'' +
+                '}';
     }
 }

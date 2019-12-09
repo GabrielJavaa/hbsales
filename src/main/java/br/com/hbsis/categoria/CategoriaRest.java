@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
 
 @RestController
 @RequestMapping("/categoria")
@@ -17,12 +15,9 @@ public class CategoriaRest {
 
     private final CategoriaService categoriaService;
 
-    private final ICategoriaRepository iCategoriaRepository;
-
     @Autowired
     public CategoriaRest(CategoriaService categoriaService, ICategoriaRepository iCategoriaRepository){
         this.categoriaService = categoriaService;
-        this.iCategoriaRepository = iCategoriaRepository;
     }
 
     @PostMapping
@@ -59,14 +54,13 @@ public class CategoriaRest {
 
     @GetMapping("/export.csv")
     public void exportCSV(HttpServletResponse file) throws Exception {
-        categoriaService.escrever(file.getWriter());
+        categoriaService.escrever(file);
 
 
     }
-    @PostMapping(value ="/import" , consumes ="multipart/form-data" )
-    public void importCSV(@RequestParam ("file") MultipartFile csvfile) throws IOException {
-        this.categoriaService.importcsv(csvfile);
-
+    @PostMapping("/importarcsv")
+    public void importCSV(@RequestParam("file") MultipartFile file) throws Exception {
+        categoriaService.ler(file);
     }
 
 }

@@ -1,6 +1,6 @@
 create table categoria(
 
-    id BIGINT IDENTITY(1,1) NOT NULL,
+    id BIGINT IDENTITY (1,1) PRIMARY KEY NOT NULL,
     nome_categoria VARCHAR(40) NOT NULL,
     fornecedor_categoria BIGINT NOT NULL,
     codigo_categoria INTEGER NOT NULL,
@@ -9,3 +9,4 @@ create table categoria(
 );
 
     create unique index ix_categoria_01 on categoria (nome_categoria asc);
+
