@@ -2,9 +2,9 @@ create table categoria(
 
     id BIGINT IDENTITY (1,1) PRIMARY KEY NOT NULL,
     nome_categoria VARCHAR(40) NOT NULL,
-    fornecedor_categoria BIGINT NOT NULL,
-    codigo_categoria INTEGER NOT NULL,
-    CONSTRAINT fk_forn FOREIGN KEY (fornecedor_categoria) REFERENCES fornecedor (id)
+    idfornecedor_categoria BIGINT NOT NULL,
+    codigo_categoria VARCHAR (10) NOT NULL,
+    CONSTRAINT fk_forn FOREIGN KEY (idfornecedor_categoria) REFERENCES fornecedor (id)
 
 );
 

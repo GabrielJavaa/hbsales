@@ -65,18 +65,6 @@ public class FornecedorService {
         }
     }
 
-    public boolean cnpj(String cnpj) {
-        cnpj = cnpj.replace(".", "");
-        cnpj = cnpj.replace("-", "");
-        cnpj = cnpj.replace("/", "");
-        try {
-            Long.parseLong(cnpj);
-        } catch (NumberFormatException e) {
-           e.printStackTrace();
-        }
-        return false;
-    }
-
     public FornecedorDTO findById(Long id){
 
         Optional<Fornecedor> fornecedorOptional = this.iFornecedorRepository.findById(id);
@@ -88,9 +76,6 @@ public class FornecedorService {
         throw new IllegalArgumentException(String.format("id %s não existente", id));
     }
 
-
-
-
     public Optional<Fornecedor> findOptionalById(Long id){
 
         Optional<Fornecedor> fornecedorOptional = this.iFornecedorRepository.findById(id);
@@ -101,21 +86,6 @@ public class FornecedorService {
 
         throw new IllegalArgumentException(String.format("id %s não existente", id));
     }
-
-
-
-
-    public Fornecedor findIdFornecedor (Long id){
-        Optional<Fornecedor> fornecedorOptional1 = this.iFornecedorRepository.findById(id);
-
-        if (fornecedorOptional1.isPresent()) {
-            return fornecedorOptional1.get();
-        }
-
-        throw new IllegalArgumentException(String.format("Fornecedor não existe: %s", id));
-    }
-
-
 
     public FornecedorDTO update(FornecedorDTO fornecedorDTO, Long id){
         Optional<Fornecedor> fornecedorExistenteOptional = this.iFornecedorRepository.findById(id);
@@ -142,22 +112,4 @@ public class FornecedorService {
             throw new IllegalArgumentException(String.format("id %s nao existente", id));
     }
 
-    public void delete(Long id){
-
-        LOGGER.info("Deletando Fornecedor pelo id: [{}]",id);
-
-        this.iFornecedorRepository.deleteById(id);
-    }
-
-    public Optional <Fornecedor> forneId(String rz){
-        Optional<Fornecedor> fornecedorOptional = this.iFornecedorRepository.findByRazaoSocial(rz);
-
-        if (fornecedorOptional.isPresent()){
-            return fornecedorOptional;
-        }
-
-        throw new IllegalArgumentException("id %s fornecedor nao existe");
-
-
-    }
 }
