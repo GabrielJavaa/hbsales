@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface IFornecedorRepository extends JpaRepository<Fornecedor, Long> {
 
     Optional<Fornecedor> findByRazaoSocial(String razaoSocial);
-
+    Optional<Fornecedor> findBycnpj(String cnpj);
 }

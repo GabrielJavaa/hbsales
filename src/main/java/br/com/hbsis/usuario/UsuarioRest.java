@@ -22,7 +22,7 @@ public class UsuarioRest {
 
 	@PostMapping
 	public UsuarioDTO save(@RequestBody UsuarioDTO usuarioDTO) {
-		LOGGER.info("Recebendo solicitação de persistência de usuário...");
+		LOGGER.info("Recebendo solicitação de persistencia de usuario...");
 		LOGGER.debug("Payaload: {}", usuarioDTO);
 
 		return this.usuarioService.save(usuarioDTO);

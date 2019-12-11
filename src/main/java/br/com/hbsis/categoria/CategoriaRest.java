@@ -16,13 +16,13 @@ public class CategoriaRest {
     private final CategoriaService categoriaService;
 
     @Autowired
-    public CategoriaRest(CategoriaService categoriaService, ICategoriaRepository iCategoriaRepository){
+    public CategoriaRest(CategoriaService categoriaService){
         this.categoriaService = categoriaService;
     }
 
     @PostMapping
     public CategoriaDTO save(@RequestBody CategoriaDTO categoriaDTO){
-        LOGGER.info("Recebendo solicitação de persistencia do Produto...");
+        LOGGER.info("Recebendo solicitação de persistencia da categoria...");
         LOGGER.debug("Payaload {}", categoriaDTO);
 
         return this.categoriaService.save(categoriaDTO);
@@ -42,16 +42,6 @@ public class CategoriaRest {
 
         return this.categoriaService.update(categoriaDTO, id);
     }
-
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id){
-        LOGGER.info("Deletando categoria pelo id: {}", id);
-
-        this.categoriaService.delete(id);
-    }
-
-
-
     @GetMapping("/export.csv")
     public void exportCSV(HttpServletResponse file) throws Exception {
         categoriaService.escrever(file);

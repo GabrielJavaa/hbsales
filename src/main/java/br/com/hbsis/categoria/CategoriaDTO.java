@@ -1,18 +1,16 @@
 package br.com.hbsis.categoria;
 
-import br.com.hbsis.fornecedor.Fornecedor;
-
 public class CategoriaDTO {
     private Long id;
     private String nomeCategoria;
-    private Fornecedor fornecedorCategoria;
-    private Integer codigoCategoria;
+    private Long idFornecedorCategoria;
+    private String codigoCategoria;
 
 
-    public CategoriaDTO(Long id, String nomeCategoria, Fornecedor fornecedorCategoria, Integer codigoCategoria) {
+    public CategoriaDTO(Long id, String nomeCategoria, Long idFornecedorCategoria, String codigoCategoria) {
         this.id=id;
         this.nomeCategoria = nomeCategoria;
-        this.fornecedorCategoria = fornecedorCategoria;
+        this.idFornecedorCategoria = idFornecedorCategoria;
         this.codigoCategoria = codigoCategoria;
     }
 
@@ -20,14 +18,15 @@ public class CategoriaDTO {
         return new CategoriaDTO(
             categoria.getId(),
             categoria.getNomeCategoria(),
-            categoria.getFornecedorCategoria(),
+            categoria.getFornecedor().getId(),
             categoria.getCodigoCategoria()
 
         );
     }
-    public Long getId() {
-        return id;
-    }
+
+    public Long getId() { return id; }
+
+    public void setId(Long id) { this.id = id; }
 
     public String getNomeCategoria() {
         return nomeCategoria;
@@ -37,15 +36,15 @@ public class CategoriaDTO {
         this.nomeCategoria = nomeCategoria;
     }
 
-    public Fornecedor getFornecedorCategoria() { return fornecedorCategoria; }
+    public Long getIdFornecedorCategoria() { return idFornecedorCategoria; }
 
-    public void setFornecedorCategoria(Fornecedor fornecedorCategoria) { this.fornecedorCategoria = fornecedorCategoria; }
+    public void setIdFornecedorCategoria(Long idFornecedorCategoria) { this.idFornecedorCategoria = idFornecedorCategoria; }
 
-    public Integer getCodigoCategoria() {
+    public String getCodigoCategoria() {
         return codigoCategoria;
     }
 
-    public void setCodigoCategoria(Integer codigoCategoria) {
+    public void setCodigoCategoria(String codigoCategoria) {
         this.codigoCategoria = codigoCategoria;
     }
 
@@ -54,7 +53,7 @@ public class CategoriaDTO {
         return "CategoriaDTO{" +
                 "id=" + id +
                 ", nomeCategoria='" + nomeCategoria + '\'' +
-                ", fornecedorCategoria='" + fornecedorCategoria + '\'' +
+                ", fornecedorCategoria='" + idFornecedorCategoria + '\'' +
                 ", codigoCategoria='" + codigoCategoria + '\'' +
                 '}';
     }

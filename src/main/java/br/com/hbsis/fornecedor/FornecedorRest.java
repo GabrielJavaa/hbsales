@@ -40,11 +40,6 @@ import org.springframework.web.bind.annotation.*;
         return this.fornecedorService.update(fornecedorDTO, id);
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id){
-        LOGGER.info("Deletando fornecedor pelo id: {}", id);
 
-        this.fornecedorService.delete(id);
-    }
 
 }
