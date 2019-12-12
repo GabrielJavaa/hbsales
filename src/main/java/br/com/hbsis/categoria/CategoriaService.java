@@ -34,7 +34,8 @@ public class CategoriaService<ExportCSV> {
         this.fornecedorService = fornecedorService;
         this.iFornecedorRepository = iFornecedorRepository;
     }
-//CADASTRAR
+
+    //CADASTRAR
     public CategoriaDTO save(CategoriaDTO categoriaDTO) {
 
         Optional<Fornecedor> fornecedorOptional = this.fornecedorService.findOptionalById(categoriaDTO.getIdFornecedorCategoria());
@@ -104,6 +105,10 @@ public class CategoriaService<ExportCSV> {
 
 //EXPORT E IMPORT CSV
 
+    public List<Categoria> categoriaList() {
+        return this.iCategoriaRepository.findAll();
+    }
+
     public void escrever(HttpServletResponse pergunta) throws Exception {
 
 
@@ -114,20 +119,32 @@ public class CategoriaService<ExportCSV> {
         PrintWriter escrito = pergunta.getWriter();
 
         ICSVWriter icsvWriter = new CSVWriterBuilder(escrito).withSeparator(';').withEscapeChar(CSVWriter.DEFAULT_ESCAPE_CHARACTER).withLineEnd(CSVWriter.DEFAULT_LINE_END).build();
-        String[] tituloCSV = {"id", "nomeCategoria", "IdfornecedorCategoria", "codigoCategoria","RazaoSocial", "cnpjFornecedor"  };
+        String[] tituloCSV = {"codigoCategoria", "nomeCategoria", "razaoSocial", "cnpj"};
+        List<Categoria> categorias = this.categoriaList();
+
         icsvWriter.writeNext(tituloCSV);
 
-        for (Categoria linhas : iCategoriaRepository.findAll())  {
-            icsvWriter.writeNext(new String[]{String.valueOf(linhas.getId()), linhas.getNomeCategoria(), String.valueOf(linhas.getFornecedor()), linhas.getCodigoCategoria()});
+
+        for (Categoria cat : iCategoriaRepository.findAll()) {
+            icsvWriter.writeNext(new String[]{
+                    cat.getCodigoCategoria(),
+                    cat.getNomeCategoria(),
+                    cat.getFornecedor().getRazaoSocial(),
+                    formatarCnpj(cat.getFornecedor().getCnpj())
+            });
+
         }
-        for (Fornecedor linhas : iFornecedorRepository.findAll()){
-            icsvWriter.writeNext((new String[]{String.valueOf(linhas.getRazaoSocial()), String.valueOf(linhas.getCnpj())}));
+    }
 
-            System.out.println(linhas.getCnpj().charAt(2)+"."+(5)+"."+(8)+"/"+(12)+"-"+(14));
+    public String formatarCnpj(String cnpj) {
+        String mask = "";
 
-
-        }
-
+        mask = (cnpj.substring(0, 2) + "."
+                + cnpj.substring(2, 5) + "."
+                + cnpj.substring(5, 8) + "/"
+                + cnpj.substring(8, 12) + "-"
+                + cnpj.substring(12, 14));
+        return mask;
     }
 
     public void ler(MultipartFile importacao) throws Exception {
@@ -157,7 +174,6 @@ public class CategoriaService<ExportCSV> {
                 System.out.println(resultado);
 
 
-
             } catch (Exception e) {
                 e.printStackTrace();
 
@@ -166,6 +182,7 @@ public class CategoriaService<ExportCSV> {
         iCategoriaRepository.saveAll(resultado);
 
     }
+
     public List<Categoria> lertudo(MultipartFile file) throws Exception {
         InputStreamReader inputStreamReader = new InputStreamReader(file.getInputStream());
         CSVReader csvReader = new CSVReaderBuilder(inputStreamReader).withSkipLines(1).build();
@@ -204,7 +221,7 @@ public class CategoriaService<ExportCSV> {
     }
 //VALIDAÇÕES
 
-    public String codigoCNPJ(CategoriaDTO categoriaDTO ){
+    public String codigoCNPJ(CategoriaDTO categoriaDTO) {
         LOGGER.info("Codigo ...");
         Optional<Fornecedor> fornecedor = this.iFornecedorRepository.findById(categoriaDTO.getIdFornecedorCategoria());
 
@@ -213,11 +230,11 @@ public class CategoriaService<ExportCSV> {
         String Cnpj2 = fornecedor.get().getCnpj();
         String Cnpj3 = "";
 
-        if (categoriaDTO.getCodigoCategoria().length()==3){
+        if (categoriaDTO.getCodigoCategoria().length() == 3) {
             Cnpj3 = categoriaDTO.getCodigoCategoria();
         }
-        if (categoriaDTO.getCodigoCategoria().length()==2){
-            Cnpj3 ="0" + categoriaDTO.getCodigoCategoria();
+        if (categoriaDTO.getCodigoCategoria().length() == 2) {
+            Cnpj3 = "0" + categoriaDTO.getCodigoCategoria();
         }
         if (categoriaDTO.getCodigoCategoria().length() == 1) {
             Cnpj3 = "00" + categoriaDTO.getCodigoCategoria();
