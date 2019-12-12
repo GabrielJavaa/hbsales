@@ -163,17 +163,16 @@ public class CategoriaService<ExportCSV> {
                 String[] dados = linha[0].replaceAll("\"", "").split(";");
 
                 Categoria categoria = new Categoria();
+                if (!iCategoriaRepository.existsByNomeCategoria(dados[1])) {
 
+                    categoria.setNomeCategoria((dados[1]));
+                    Optional<Fornecedor> fornecedor = iFornecedorRepository.findByCnpj(formatarImport(dados[3]));
+                    categoria.setCodigoCategoria((dados[0]));
 
-                categoria.setId((int) Long.parseLong(dados[0]));
-                categoria.setNomeCategoria((dados[1]));
-                Optional<Fornecedor> fornecedor = fornecedorService.findOptionalById(Long.parseLong(dados[2]));
-                categoria.setCodigoCategoria((dados[3]));
-
-                resultado.add(categoria);
-                System.out.println(resultado);
-
-
+                    categoria.setFornecedor(fornecedor.get());
+                    resultado.add(categoria);
+                    System.out.println(resultado);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
 
@@ -181,6 +180,11 @@ public class CategoriaService<ExportCSV> {
         }
         iCategoriaRepository.saveAll(resultado);
 
+    }
+    public String formatarImport(String cnpj) {
+      cnpj =  cnpj.replace(".","").replace("-","").replace("/", "").replace(" ", "");
+        System.out.println(cnpj);
+       return cnpj;
     }
 
     public List<Categoria> lertudo(MultipartFile file) throws Exception {
