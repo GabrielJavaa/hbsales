@@ -1,18 +1,23 @@
 package br.com.hbsis.linha;
 
 import br.com.hbsis.categoria.Categoria;
+import br.com.hbsis.categoria.CategoriaDTO;
 import br.com.hbsis.categoria.CategoriaService;
+import br.com.hbsis.categoria.ICategoriaRepository;
+import br.com.hbsis.fornecedor.Fornecedor;
 import com.google.common.net.HttpHeaders;
-import com.opencsv.CSVWriter;
-import com.opencsv.CSVWriterBuilder;
-import com.opencsv.ICSVWriter;
+import com.opencsv.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -22,11 +27,15 @@ public class LinhaService {
 
     private final ILinhaRepository iLinhaRepository;
     private final CategoriaService categoriaService;
+    private final ICategoriaRepository iCategoriaRepository;
 
-    public LinhaService( ILinhaRepository iLinhaRepository, CategoriaService categoriaService){
+    public LinhaService( ILinhaRepository iLinhaRepository, CategoriaService categoriaService, ICategoriaRepository iCategoriaRepository){
         this.iLinhaRepository = iLinhaRepository;
         this.categoriaService = categoriaService;
+        this.iCategoriaRepository = iCategoriaRepository;
     }
+
+//CADASTRAR LINHAS
 
     public LinhaDTO save (LinhaDTO linhaDTO){
 
@@ -48,7 +57,7 @@ public class LinhaService {
             return LinhaDTO.of(linha);
 
     }
-
+//VALIDACOES
     private void validate(LinhaDTO linhaDTO){
         LOGGER.info("Validando Linhas");
 
@@ -63,6 +72,9 @@ public class LinhaService {
         }
 
     }
+
+//METODOS DE PESQUISA
+
     public LinhaDTO findById(Long id){
         Optional<Linha> linhaOptional = this.iLinhaRepository.findById(id);
 
@@ -78,7 +90,10 @@ public class LinhaService {
         }
         throw new IllegalArgumentException(String.format("id %s nao existe", id));
     }
-    public LinhaDTO update(LinhaDTO linhaDTO, Long id){
+
+//ALTERAR LINHAS
+
+    public LinhaDTO update(LinhaDTO linhaDTO, Long id) {
         Optional<Linha> linhaExisteteOptional = this.iLinhaRepository.findById(id);
 
         if (linhaExisteteOptional.isPresent()) {
@@ -98,11 +113,9 @@ public class LinhaService {
         }
         throw new IllegalArgumentException(String.format("id %s nao existente", id));
     }
-    public void delete(Long id){
-        LOGGER.info("Deletando linhas pelo id : [{}]", id);
+//EXPORT E IMPORT DOS CSV
 
-        this.iLinhaRepository.deleteById(id);
-    }
+
     void escreverLinha(HttpServletResponse reponde) throws Exception {
         String nomeArquivo = "arquivoLinha.csv";
         reponde.setContentType("text/csv");
@@ -119,6 +132,86 @@ public class LinhaService {
         }
     }
 
+
+    public void ler(MultipartFile importacao) throws Exception {
+        InputStreamReader inserir = new InputStreamReader(importacao.getInputStream());
+
+
+        CSVReader leitor = new CSVReaderBuilder(inserir).withSkipLines(1).build();
+
+        List<String[]> linhaLer = leitor.readAll();
+        List<Categoria> resultado = new ArrayList<>();
+
+        for (String[] lin : linhaLer) {
+
+            try {
+
+                String[] dados = lin[0].replaceAll("\"", "").split(";");
+
+                Linha linha = new Linha();
+
+
+                    linha.setNome((dados[1]));
+                    Optional<Categoria> categoria = (iCategoriaRepository.findByCodigoCategoria(dados[2]));
+                    linha.setCodigolinha(dados[0]);
+
+
+                    linha.setCategorialinha(categoria.get());
+//                    resultado.add(linha);
+                    System.out.println(resultado);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
+        }
+        iCategoriaRepository.saveAll(resultado);
+
+    }
+//VALIDACOES
+
+    public String codigoCNPJ(CategoriaDTO categoriaDTO) {
+        LOGGER.info("Codigo ...");
+        Optional<Linha> linhaOptional = this.iLinhaRepository.findBycodigolinha(categoriaDTO.getCodigoCategoria());
+
+        String Cod = "";
+        String Cod1 = "";
+        String Cod2 = linhaOptional.get().getCodigolinha();
+        String Cod3 = "";
+
+//        if (categoriaDTO.getCodigoCategoria().length() == 9) {
+//            Cod3 = "0" + categoriaDTO.getCodigoCategoria();
+//        }
+//        if (categoriaDTO.getCodigoCategoria().length() == 8) {
+//            Cod3 = "00" + categoriaDTO.getCodigoCategoria();
+//        }
+//        if (categoriaDTO.getCodigoCategoria().length() == 7) {
+//            Cod3 = "000" + categoriaDTO.getCodigoCategoria();
+//        }
+//        if (categoriaDTO.getCodigoCategoria().length() == 6) {
+//            Cod3 = "0000" + categoriaDTO.getCodigoCategoria();
+//        }
+//        if (categoriaDTO.getCodigoCategoria().length() == 5) {
+//            Cod3 = "00000" + categoriaDTO.getCodigoCategoria();
+//        }
+//        if (categoriaDTO.getCodigoCategoria().length() == 4) {
+//            Cod3 = "000000" + categoriaDTO.getCodigoCategoria();
+//        }
+//        if (categoriaDTO.getCodigoCategoria().length() == 3) {
+//            Cod3 = "0000000" + categoriaDTO.getCodigoCategoria();
+//        }
+//        if (categoriaDTO.getCodigoCategoria().length() == 2) {
+//            Cod3 = "00000000" + categoriaDTO.getCodigoCategoria();
+//        }
+//        if (categoriaDTO.getCodigoCategoria().length() == 1) {
+//            Cod3 = "000000000" + categoriaDTO.getCodigoCategoria();
+//        }
+
+
+        Cod = Cod1 + Cod2 + Cod3;
+
+        return Cod;
+    }
 
 
 

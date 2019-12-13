@@ -89,7 +89,9 @@ public class FornecedorService {
 
     public FornecedorDTO update(FornecedorDTO fornecedorDTO, Long id){
         Optional<Fornecedor> fornecedorExistenteOptional = this.iFornecedorRepository.findById(id);
+        this.validate(fornecedorDTO);
 
+// TODO: 13/12/2019 colocar a validação no update
             if (fornecedorExistenteOptional.isPresent()){
                 Fornecedor fornecedorExistente = fornecedorExistenteOptional.get();
 

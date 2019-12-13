@@ -2,7 +2,7 @@ package br.com.hbsis.linha;
 
 
 import br.com.hbsis.categoria.Categoria;
-import com.opencsv.bean.CsvBindByPosition;
+
 
 import javax.persistence.*;
 
@@ -12,20 +12,16 @@ public class Linha {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @CsvBindByPosition(position = 0)
     private long id;
 
     @Column(name = "nome", unique = false, nullable = false, length = 40)
-    @CsvBindByPosition(position = 1)
     private String nome;
 
     @ManyToOne
     @JoinColumn(name ="categorialinha" , referencedColumnName = "id")
-    @CsvBindByPosition(position = 2)
     private Categoria categorialinha;
 
-    @Column(name = "codigolinha", unique = true, nullable = false)
-    @CsvBindByPosition(position = 3)
+    @Column(name = "codigolinha", unique = true, nullable = false, length = 10)
     private String codigolinha;
 
     public long getId() {
