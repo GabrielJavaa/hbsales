@@ -39,14 +39,15 @@ public class LinhaRest {
         LOGGER.debug("Recebendo {} ", linhaDTO);
         return this.linhaService.update(linhaDTO, id);
     }
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id){
-        LOGGER.info("deletando Linha pelo is... id:{}", id);
-        this.linhaService.delete(id);
-    }
+
     @GetMapping("/export.csv")
     public void exportCSV(HttpServletResponse file) throws Exception {
         linhaService.escreverLinha(file);
+    }
+
+    @PostMapping("/importarcsv")
+    public void importCSV(@RequestParam("file") MultipartFile file) throws Exception {
+        linhaService.ler(file);
     }
 
 }

@@ -4,9 +4,9 @@ import br.com.hbsis.fornecedor.Fornecedor;
 import br.com.hbsis.fornecedor.FornecedorDTO;
 import br.com.hbsis.fornecedor.FornecedorService;
 import br.com.hbsis.fornecedor.IFornecedorRepository;
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.google.common.net.HttpHeaders;
 import com.opencsv.*;
+import com.sun.xml.bind.v2.TODO;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,8 +82,11 @@ public class CategoriaService<ExportCSV> {
 
     public CategoriaDTO update(CategoriaDTO categoriaDTO, Long id) {
         Optional<Categoria> categoriaExistenteOptical = this.iCategoriaRepository.findById(id);
-        Fornecedor fornecedor = new Fornecedor();
 
+        this.validate(categoriaDTO);
+
+        Fornecedor fornecedor = new Fornecedor();
+// TODO: 13/12/2019 chamar a validação para o update
         if (categoriaExistenteOptical.isPresent()) {
             Categoria categoriaExistente = categoriaExistenteOptical.get();
 
@@ -167,11 +170,14 @@ public class CategoriaService<ExportCSV> {
 
                     categoria.setNomeCategoria((dados[1]));
                     Optional<Fornecedor> fornecedor = iFornecedorRepository.findByCnpj(formatarImport(dados[3]));
+                    TODO: 13/12/2019 fazer a validação do código da categoria
                     categoria.setCodigoCategoria((dados[0]));
 
                     categoria.setFornecedor(fornecedor.get());
                     resultado.add(categoria);
-                    System.out.println(resultado);
+
+//                    String nome = "joao";
+//                    LOGGER.info("meu nome é {}", nome);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
