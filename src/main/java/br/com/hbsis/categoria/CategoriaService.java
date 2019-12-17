@@ -29,7 +29,7 @@ public class CategoriaService<ExportCSV> {
     private IFornecedorRepository iFornecedorRepository = null;
 
 
-    public CategoriaService(ICategoriaRepository iCategoriaRepository, FornecedorService fornecedorService){
+    public CategoriaService(ICategoriaRepository iCategoriaRepository, FornecedorService fornecedorService) {
         this.iCategoriaRepository = iCategoriaRepository;
         this.fornecedorService = fornecedorService;
         this.iFornecedorRepository = iFornecedorRepository;
@@ -47,75 +47,75 @@ public class CategoriaService<ExportCSV> {
 
         Fornecedor fornecedor = fornecedorOptional.get();
 
-            Categoria categoria = new Categoria();
-            categoria.setNomeCategoria(categoriaDTO.getNomeCategoria());
-            categoria.setFornecedorCategoria(fornecedor);
-            categoria.setCodigoCategoria(categoriaDTO.getCodigoCategoria());
-            categoria= this.iCategoriaRepository.save(categoria);
-            return CategoriaDTO.of(categoria);
-        }
+        Categoria categoria = new Categoria();
+        categoria.setNomeCategoria(categoriaDTO.getNomeCategoria());
+        categoria.setFornecedorCategoria(fornecedor);
+        categoria.setCodigoCategoria(categoriaDTO.getCodigoCategoria());
+        categoria = this.iCategoriaRepository.save(categoria);
+        return CategoriaDTO.of(categoria);
+    }
 
     public void validate(CategoriaDTO categoriaDTO) {
         LOGGER.info("validando fornecedor");
 
-        if (categoriaDTO == null){
+        if (categoriaDTO == null) {
             throw new IllegalArgumentException("A categoria não pode ser nulo");
         }
-        if (StringUtils.isEmpty(categoriaDTO.getNomeCategoria())){
+        if (StringUtils.isEmpty(categoriaDTO.getNomeCategoria())) {
             throw new IllegalArgumentException("Nome categoria não pode ser nulo");
         }
 
-        if (categoriaDTO.getFornecedorCategoria().getId() == null){
+        if (categoriaDTO.getFornecedorCategoria().getId() == null) {
             throw new IllegalArgumentException("fornecedor categoria não pode ser nulo");
         }
-        if (categoriaDTO.getCodigoCategoria() == 0){
+        if (categoriaDTO.getCodigoCategoria() == 0) {
             throw new IllegalArgumentException("codigo categoria não pode ser nulo");
         }
 
     }
 
-    public CategoriaDTO findById(Long id){
+    public CategoriaDTO findById(Long id) {
         Optional<Categoria> categoriaOptional = this.iCategoriaRepository.findById(id);
 
-            if(categoriaOptional.isPresent()){
-                return CategoriaDTO.of(categoriaOptional.get());
-            }
+        if (categoriaOptional.isPresent()) {
+            return CategoriaDTO.of(categoriaOptional.get());
+        }
 
-            throw new IllegalArgumentException(String.format("id %s não existe", id));
+        throw new IllegalArgumentException(String.format("id %s não existe", id));
     }
 
 
     public CategoriaDTO update(CategoriaDTO categoriaDTO, Long id) {
         Optional<Categoria> categoriaExistenteOptical = this.iCategoriaRepository.findById(id);
 
-
-                Categoria categoriaExistente = categoriaExistenteOptical.get();
-
-
-                LOGGER.info("Atualizando categoria... id: [{}]", categoriaExistente.getId());
-                LOGGER.debug("Payload: {}", categoriaDTO);
-                LOGGER.debug("Categoria existente: {}", categoriaExistente);
-
-                categoriaExistente.setNomeCategoria(categoriaDTO.getNomeCategoria());
-                categoriaExistente.setFornecedorCategoria(categoriaDTO.getFornecedorCategoria());
-                categoriaExistente.setCodigoCategoria(categoriaDTO.getCodigoCategoria());
-
-                categoriaExistente = this.iCategoriaRepository.save(categoriaExistente);
-
-                return categoriaDTO.of(categoriaExistente);
-            }
+        this.validate(categoriaDTO);
 
 
+        Categoria categoriaExistente = categoriaExistenteOptical.get();
 
 
-    public void delete(Long id){
+        LOGGER.info("Atualizando categoria... id: [{}]", categoriaExistente.getId());
+        LOGGER.debug("Payload: {}", categoriaDTO);
+        LOGGER.debug("Categoria existente: {}", categoriaExistente);
+
+        categoriaExistente.setNomeCategoria(categoriaDTO.getNomeCategoria());
+        categoriaExistente.setFornecedorCategoria(categoriaDTO.getFornecedorCategoria());
+        categoriaExistente.setCodigoCategoria(categoriaDTO.getCodigoCategoria());
+
+        categoriaExistente = this.iCategoriaRepository.save(categoriaExistente);
+
+        return categoriaDTO.of(categoriaExistente);
+    }
+
+
+    public void delete(Long id) {
         LOGGER.info("Excluindo Categoria id: [{}]", id);
 
         this.iCategoriaRepository.deleteById(id);
     }
 
 
-    public List<Categoria> categoriaList(Writer writer){
+    public List<Categoria> categoriaList(Writer writer) {
         List<Categoria> categorias = new ArrayList<>();
         categorias = this.iCategoriaRepository.findAll();
         return categorias;
@@ -136,9 +136,9 @@ public class CategoriaService<ExportCSV> {
         for (Categoria categoria : categoriaList) {
             csvWriter.writeNext(new String[]{
                     categoria.getId() + ";" +
-                    categoria.getNomeCategoria() + ";" +
-                    categoria.getFornecedorCategoria().getRazaoSocial() + ";" +
-                    categoria.getCodigoCategoria() + ";"
+                            categoria.getNomeCategoria() + ";" +
+                            categoria.getFornecedorCategoria().getRazaoSocial() + ";" +
+                            categoria.getCodigoCategoria() + ";"
             });
 
         }
@@ -147,16 +147,16 @@ public class CategoriaService<ExportCSV> {
     public void importcsv(MultipartFile csvfile) throws IOException {
 
 
-        String linha="";
-        String esc=";";
+        String linha = "";
+        String esc = ";";
 
-        try{BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(csvfile.getInputStream()));
-            linha= bufferedReader.readLine();
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(csvfile.getInputStream()));
+            linha = bufferedReader.readLine();
 
-            while ((linha = bufferedReader.readLine()) !=null) {
+            while ((linha = bufferedReader.readLine()) != null) {
 
                 String[] country = linha.split(esc);
-
 
 
                 Categoria categoria = new Categoria();
@@ -172,7 +172,7 @@ public class CategoriaService<ExportCSV> {
 
                     this.iCategoriaRepository.save(categoria);
                 } else {
-                    throw new IllegalArgumentException(String.format("id %s nao existe",Long.parseLong(country[0])));
+                    throw new IllegalArgumentException(String.format("id %s nao existe", Long.parseLong(country[0])));
                 }
             }
         } catch (IOException e) {
@@ -181,9 +181,6 @@ public class CategoriaService<ExportCSV> {
             e.printStackTrace();
         }
     }
-
-
-
 
 
 }
