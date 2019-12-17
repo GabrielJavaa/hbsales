@@ -48,10 +48,13 @@ public class CategoriaService<ExportCSV> {
         Categoria categoria = new Categoria();
 
         Fornecedor fornecedor = fornecedorOptional.get();
+        System.out.println(fornecedor);
 
         String codigo = categoriaDTO.getCodigoCategoria();
-        String cnp = categoriaDTO.getFornecedor().getCnpj();
+        System.out.println(fornecedor.getCnpj());
+        String cnp = fornecedor.getCnpj();
         String cate = quatroCNPJ(cnp);
+
         String formatado = "CAT" + cate + codigo;
 
         categoria.setNomeCategoria(categoriaDTO.getNomeCategoria());
@@ -62,7 +65,7 @@ public class CategoriaService<ExportCSV> {
         return CategoriaDTO.of(categoria);
     }
 
-    public String quatroCNPJ(String cnpj) {
+    private String quatroCNPJ(String cnpj) {
         String ultimosDigitos = cnpj.substring(cnpj.length() - 4);
 
         return ultimosDigitos;
