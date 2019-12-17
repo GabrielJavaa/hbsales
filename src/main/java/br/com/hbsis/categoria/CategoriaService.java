@@ -186,31 +186,7 @@ public class CategoriaService<ExportCSV> {
         }
         iCategoriaRepository.saveAll(resultado);
     }
-    //Validação de Codigo de categoria
 
-
-//    public String codigoCNPJ(CategoriaDTO categoriaDTO) {
-//        LOGGER.info("Codigo ...");
-//        Optional<Fornecedor> fornecedor = this.iFornecedorRepository.findOptionalById(categoriaDTO.getFornecedor());
-//
-//        String CnpjCod = "";
-//        String Cnpj1 = "CAT";
-//        String Cnpj2 = fornecedor.get().getCnpj();
-//        String Cnpj3 = "";
-//
-//        if (categoriaDTO.getCodigoCategoria().length() == 3) {
-//            Cnpj3 = categoriaDTO.getCodigoCategoria();
-//        }
-//        if (categoriaDTO.getCodigoCategoria().length() == 2) {
-//            Cnpj3 = "0" + categoriaDTO.getCodigoCategoria();
-//        }
-//        if (categoriaDTO.getCodigoCategoria().length() == 1) {
-//            Cnpj3 = "00" + categoriaDTO.getCodigoCategoria();
-//        }
-//        CnpjCod = Cnpj1 + Cnpj2 + Cnpj3;
-//
-//        return CnpjCod;
-//    }
 
 
     public String formatarImport(String cnpj) {
