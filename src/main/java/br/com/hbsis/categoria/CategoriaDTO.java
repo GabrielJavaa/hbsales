@@ -5,29 +5,30 @@ import br.com.hbsis.fornecedor.Fornecedor;
 public class CategoriaDTO {
     private Long id;
     private String nomeCategoria;
-    private Fornecedor fornecedorCategoria;
-    private Integer codigoCategoria;
+    private String codigoCategoria;
+    private Fornecedor fornecedor;
 
 
-    public CategoriaDTO(Long id, String nomeCategoria, Fornecedor fornecedorCategoria, Integer codigoCategoria) {
-        this.id=id;
+    public CategoriaDTO(Long id, String nomeCategoria, String codigoCategoria) {
+        this.id = id;
         this.nomeCategoria = nomeCategoria;
-        this.fornecedorCategoria = fornecedorCategoria;
         this.codigoCategoria = codigoCategoria;
+
     }
 
     public static CategoriaDTO of(Categoria categoria){
         return new CategoriaDTO(
             categoria.getId(),
             categoria.getNomeCategoria(),
-            categoria.getFornecedorCategoria(),
-            categoria.getCodigoCategoria()
+             categoria.getCodigoCategoria()
+
 
         );
     }
-    public Long getId() {
-        return id;
-    }
+
+    public Long getId() { return id; }
+
+    public void setId(Long id) { this.id = id; }
 
     public String getNomeCategoria() {
         return nomeCategoria;
@@ -37,19 +38,30 @@ public class CategoriaDTO {
         this.nomeCategoria = nomeCategoria;
     }
 
-    public Fornecedor getFornecedorCategoria() {
-        return fornecedorCategoria;
-    }
 
-    public void setFornecedorCategoria(Fornecedor fornecedorCategoria) {
-        this.fornecedorCategoria = fornecedorCategoria;
-    }
 
-    public Integer getCodigoCategoria() {
+    public String getCodigoCategoria() {
         return codigoCategoria;
     }
 
-    public void setCodigoCategoria(Integer codigoCategoria) {
+    public void setCodigoCategoria(String codigoCategoria) {
         this.codigoCategoria = codigoCategoria;
+    }
+
+    public Fornecedor getFornecedor() {
+        return fornecedor;
+    }
+
+    public void setFornecedor(Fornecedor fornecedor) {
+        this.fornecedor = fornecedor;
+    }
+
+    @Override
+    public String toString() {
+        return "CategoriaDTO{" +
+                "id=" + id +
+                ", nomeCategoria='" + nomeCategoria + '\'' +
+                ", codigoCategoria='" + codigoCategoria + '\'' +
+                '}';
     }
 }

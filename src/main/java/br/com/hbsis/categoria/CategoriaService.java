@@ -1,20 +1,20 @@
 package br.com.hbsis.categoria;
 
-
 import br.com.hbsis.fornecedor.Fornecedor;
+import br.com.hbsis.fornecedor.FornecedorDTO;
 import br.com.hbsis.fornecedor.FornecedorService;
 import br.com.hbsis.fornecedor.IFornecedorRepository;
-import com.opencsv.CSVWriter;
+import com.google.common.net.HttpHeaders;
+import com.opencsv.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
-import java.io.IOException;
+import javax.servlet.http.HttpServletResponse;
 import java.io.InputStreamReader;
-import java.io.Writer;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,54 +25,54 @@ public class CategoriaService<ExportCSV> {
     private static final Logger LOGGER = LoggerFactory.getLogger(CategoriaService.class);
 
     private final ICategoriaRepository iCategoriaRepository;
-    private final FornecedorService fornecedorService;
-    private IFornecedorRepository iFornecedorRepository = null;
+
+    private final IFornecedorRepository iFornecedorRepository;
 
 
-    public CategoriaService(ICategoriaRepository iCategoriaRepository, FornecedorService fornecedorService) {
+    public CategoriaService(ICategoriaRepository iCategoriaRepository, IFornecedorRepository iFornecedorRepository) {
         this.iCategoriaRepository = iCategoriaRepository;
-        this.fornecedorService = fornecedorService;
+
         this.iFornecedorRepository = iFornecedorRepository;
 
     }
 
+    //CADASTRAR
     public CategoriaDTO save(CategoriaDTO categoriaDTO) {
 
-        Optional<Fornecedor> fornecedorOptional = this.fornecedorService.findOptionalById(categoriaDTO.getFornecedorCategoria().getId());
+        Optional<Fornecedor> fornecedorOptional = this.iFornecedorRepository.findById(categoriaDTO.getFornecedor().getId());
 
         this.validate(categoriaDTO);
-
         LOGGER.info("Salvando Categorias");
         LOGGER.debug("Categoria: {}", categoriaDTO);
 
-        Fornecedor fornecedor = fornecedorOptional.get();
-
         Categoria categoria = new Categoria();
+
+        Fornecedor fornecedor = fornecedorOptional.get();
+        System.out.println(fornecedor);
+
+        String codigo = categoriaDTO.getCodigoCategoria();
+        System.out.println(fornecedor.getCnpj());
+        String cnp = fornecedor.getCnpj();
+        String cate = quatroCNPJ(cnp);
+
+        String formatado = "CAT" + cate + codigo;
+
         categoria.setNomeCategoria(categoriaDTO.getNomeCategoria());
-        categoria.setFornecedorCategoria(fornecedor);
-        categoria.setCodigoCategoria(categoriaDTO.getCodigoCategoria());
+        categoria.setFornecedor(fornecedor);
+        categoria.setCodigoCategoria(formatado);
+
         categoria = this.iCategoriaRepository.save(categoria);
         return CategoriaDTO.of(categoria);
     }
 
-    public void validate(CategoriaDTO categoriaDTO) {
-        LOGGER.info("validando fornecedor");
+    private String quatroCNPJ(String cnpj) {
+        String ultimosDigitos = cnpj.substring(cnpj.length() - 4);
 
-        if (categoriaDTO == null) {
-            throw new IllegalArgumentException("A categoria não pode ser nulo");
-        }
-        if (StringUtils.isEmpty(categoriaDTO.getNomeCategoria())) {
-            throw new IllegalArgumentException("Nome categoria não pode ser nulo");
-        }
-
-        if (categoriaDTO.getFornecedorCategoria().getId() == null) {
-            throw new IllegalArgumentException("fornecedor categoria não pode ser nulo");
-        }
-        if (categoriaDTO.getCodigoCategoria() == 0) {
-            throw new IllegalArgumentException("codigo categoria não pode ser nulo");
-        }
-
+        return ultimosDigitos;
     }
+
+
+//PERCORRER TABELA
 
     public CategoriaDTO findById(Long id) {
         Optional<Categoria> categoriaOptional = this.iCategoriaRepository.findById(id);
@@ -84,13 +84,16 @@ public class CategoriaService<ExportCSV> {
         throw new IllegalArgumentException(String.format("id %s não existe", id));
     }
 
+//ALTERAR A TABELA
 
     public CategoriaDTO update(CategoriaDTO categoriaDTO, Long id) {
         Optional<Categoria> categoriaExistenteOptical = this.iCategoriaRepository.findById(id);
 
         this.validate(categoriaDTO);
+        //this.codigoCNPJ(categoriaDTO);
 
-
+        Fornecedor fornecedor = categoriaExistenteOptical.get().getFornecedor();
+// TODO: 13/12/2019 chamar a validação para o update
         Categoria categoriaExistente = categoriaExistenteOptical.get();
 
 
@@ -99,88 +102,116 @@ public class CategoriaService<ExportCSV> {
         LOGGER.debug("Categoria existente: {}", categoriaExistente);
 
         categoriaExistente.setNomeCategoria(categoriaDTO.getNomeCategoria());
-        categoriaExistente.setFornecedorCategoria(categoriaDTO.getFornecedorCategoria());
+        categoriaExistente.setFornecedor(fornecedor);
         categoriaExistente.setCodigoCategoria(categoriaDTO.getCodigoCategoria());
 
         categoriaExistente = this.iCategoriaRepository.save(categoriaExistente);
 
-        return categoriaDTO.of(categoriaExistente);
+        return CategoriaDTO.of(categoriaExistente);
     }
 
+//EXPORT E IMPORT CSV
 
-    public void delete(Long id) {
-        LOGGER.info("Excluindo Categoria id: [{}]", id);
-
-        this.iCategoriaRepository.deleteById(id);
+    public List<Categoria> categoriaList() {
+        return this.iCategoriaRepository.findAll();
     }
 
+    public void escrever(HttpServletResponse pergunta) throws Exception {
 
-    public List<Categoria> categoriaList(Writer writer) {
-        List<Categoria> categorias = new ArrayList<>();
-        categorias = this.iCategoriaRepository.findAll();
-        return categorias;
-    }
 
-    public void escrever(Writer writer) {
-        CSVWriter csvWriter = new CSVWriter(writer,
-                CSVWriter.DEFAULT_SEPARATOR,
-                CSVWriter.NO_QUOTE_CHARACTER,
-                CSVWriter.DEFAULT_ESCAPE_CHARACTER,
-                CSVWriter.DEFAULT_LINE_END
-        );
-        String[] dados = {"id;nomeCategoria;fornecedorCategoria;codigoCategoria"};
+        String nomeArquivo = "arquivoCategoria.csv";
+        pergunta.setContentType("text/csv");
+        pergunta.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + nomeArquivo + "\"");
 
-        csvWriter.writeNext(dados);
+        PrintWriter escrito = pergunta.getWriter();
 
-        List<Categoria> categoriaList = this.iCategoriaRepository.findAll();
-        for (Categoria categoria : categoriaList) {
-            csvWriter.writeNext(new String[]{
-                    categoria.getId() + ";" +
-                            categoria.getNomeCategoria() + ";" +
-                            categoria.getFornecedorCategoria().getRazaoSocial() + ";" +
-                            categoria.getCodigoCategoria() + ";"
+        ICSVWriter icsvWriter = new CSVWriterBuilder(escrito).withSeparator(';').withEscapeChar(CSVWriter.DEFAULT_ESCAPE_CHARACTER).withLineEnd(CSVWriter.DEFAULT_LINE_END).build();
+        String[] tituloCSV = {"codigoCategoria", "nomeCategoria", "razaoSocial", "cnpj"};
+        List<Categoria> categorias = this.categoriaList();
+
+        icsvWriter.writeNext(tituloCSV);
+
+
+        for (Categoria cat : iCategoriaRepository.findAll()) {
+            icsvWriter.writeNext(new String[]{
+                    cat.getCodigoCategoria(),
+                    cat.getNomeCategoria(),
+                    cat.getFornecedor().getRazaoSocial(),
+                    formatarCnpj(cat.getFornecedor().getCnpj())
             });
 
         }
     }
 
-    public void importcsv(MultipartFile csvfile) throws IOException {
+    public String formatarCnpj(String cnpj) {
+        String mask = "";
+
+        mask = (cnpj.substring(0, 2) + "."
+                + cnpj.substring(2, 5) + "."
+                + cnpj.substring(5, 8) + "/"
+                + cnpj.substring(8, 12) + "-"
+                + cnpj.substring(12, 14));
+        return mask;
+    }
+
+    public void ler(MultipartFile importacao) throws Exception {
+        InputStreamReader inserir = new InputStreamReader(importacao.getInputStream());
 
 
-        String linha = "";
-        String esc = ";";
+        CSVReader leitor = new CSVReaderBuilder(inserir).withSkipLines(1).build();
 
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(csvfile.getInputStream()));
-            linha = bufferedReader.readLine();
+        List<String[]> linhaLer = leitor.readAll();
+        List<Categoria> resultado = new ArrayList<>();
 
-            while ((linha = bufferedReader.readLine()) != null) {
+        for (String[] linha : linhaLer) {
 
-                String[] country = linha.split(esc);
+            try {
 
+                String[] dados = linha[0].replaceAll("\"", "").split(";");
 
                 Categoria categoria = new Categoria();
-                Optional<Fornecedor> fornecedorOptional = this.fornecedorService.forneId(country[2]);
-                System.out.println(fornecedorOptional.get());
+                if (!iCategoriaRepository.existsByNomeCategoria(dados[1])) {
 
-                if (fornecedorOptional.isPresent()) {
-                    Fornecedor fornecedor = fornecedorOptional.get();
+                    categoria.setNomeCategoria((dados[1]));
+                    categoria.setCodigoCategoria(dados[2]);
+                    Optional<Fornecedor> fornecedor = iFornecedorRepository.findByCnpj(formatarImport(dados[3]));
+                    resultado.add(categoria);
 
-                    categoria.setNomeCategoria(country[1]);
-                    categoria.setCodigoCategoria(Integer.parseInt(country[3]));
-                    categoria.setFornecedorCategoria(fornecedor);
 
-                    this.iCategoriaRepository.save(categoria);
-                } else {
-                    throw new IllegalArgumentException(String.format("id %s nao existe", Long.parseLong(country[0])));
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
+
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
         }
+        iCategoriaRepository.saveAll(resultado);
     }
 
 
+
+    public String formatarImport(String cnpj) {
+        cnpj = cnpj.replace(".", "").replace("-", "").replace("/", "").replace(" ", "");
+        System.out.println(cnpj);
+        return cnpj;
+    }
+
+
+//VALIDAÇÕES
+
+
+    private void validate(CategoriaDTO categoriaDTO) {
+        LOGGER.info("validando fornecedor");
+
+        if (categoriaDTO == null) {
+            throw new IllegalArgumentException("A categoria não pode ser nulo");
+        }
+        if (StringUtils.isEmpty(categoriaDTO.getNomeCategoria())) {
+            throw new IllegalArgumentException("Nome categoria não pode ser nulo");
+        }
+
+        if (StringUtils.isEmpty(categoriaDTO.getCodigoCategoria())) {
+            throw new IllegalArgumentException("codigo categoria não pode ser nulo");
+        }
+    }
 }
+

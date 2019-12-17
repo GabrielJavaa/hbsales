@@ -1,0 +1,1 @@
+create unique index codigolinha on linha (codigolinha);

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
     public FornecedorRest(FornecedorService fornecedorService) { this.fornecedorService = fornecedorService; }
 
     @PostMapping
-    public FornecedorDTO save (@RequestBody FornecedorDTO fornecedorDTO) throws IllegalAccessException {
+    public FornecedorDTO save (@RequestBody FornecedorDTO fornecedorDTO) {
         LOGGER.info("Recebendo solicitação de persistencia do Fornecedor...");
         LOGGER.debug("Payaload {}", fornecedorDTO);
         return this.fornecedorService.save(fornecedorDTO);
@@ -33,18 +33,13 @@ import org.springframework.web.bind.annotation.*;
     }
 
     @PutMapping("/{id}")
-    public FornecedorDTO update(@PathVariable("id")Long id, @RequestBody FornecedorDTO fornecedorDTO) throws IllegalAccessException {
+    public FornecedorDTO update(@PathVariable("id")Long id, @RequestBody FornecedorDTO fornecedorDTO) {
         LOGGER.info("Alterando fornecedor pelo id... id: {}", id);
         LOGGER.debug("Payload {}", fornecedorDTO);
 
         return this.fornecedorService.update(fornecedorDTO, id);
     }
 
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id){
-        LOGGER.info("Deletando fornecedor pelo id: {}", id);
 
-        this.fornecedorService.delete(id);
-    }
 
 }
