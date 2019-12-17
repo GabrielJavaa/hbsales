@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface ILinhaRepository extends JpaRepository<Linha, Long> {
 
 
-    Optional<Linha>findBycodigolinha(String codigolinha);
+    Optional<Linha>findById(Linha linha);
 }

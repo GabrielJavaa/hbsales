@@ -13,7 +13,6 @@ public class Categoria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-
     @Column(name = "nome_categoria", unique = true, nullable = false, length = 40)
     private String nomeCategoria;
 

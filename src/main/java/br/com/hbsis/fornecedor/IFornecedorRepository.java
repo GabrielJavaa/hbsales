@@ -9,6 +9,8 @@ import java.util.Optional;
 @Repository
 public interface IFornecedorRepository extends JpaRepository<Fornecedor, Long> {
 
-    Optional<Fornecedor> findByRazaoSocial(String razaoSocial);
     Optional<Fornecedor> findByCnpj(String cnpj);
+
+    Optional<Fornecedor> findById(Fornecedor fornecedor);
+
 }

@@ -17,7 +17,8 @@ public class CategoriaRest {
 
     @Autowired
     public CategoriaRest(CategoriaService categoriaService){
-        this.categoriaService = categoriaService;
+
+         this.categoriaService = categoriaService;
     }
 
     @PostMapping

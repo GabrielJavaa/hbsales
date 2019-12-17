@@ -1,10 +1,7 @@
 package br.com.hbsis.linha;
 
 import br.com.hbsis.categoria.Categoria;
-import br.com.hbsis.categoria.CategoriaDTO;
-import br.com.hbsis.categoria.CategoriaService;
 import br.com.hbsis.categoria.ICategoriaRepository;
-import br.com.hbsis.fornecedor.Fornecedor;
 import com.google.common.net.HttpHeaders;
 import com.opencsv.*;
 import org.apache.commons.lang.StringUtils;
@@ -26,22 +23,22 @@ public class LinhaService {
     private static final Logger LOGGER = LoggerFactory.getLogger(LinhaService.class);
 
     private final ILinhaRepository iLinhaRepository;
-    private final CategoriaService categoriaService;
+
     private final ICategoriaRepository iCategoriaRepository;
 
-    public LinhaService( ILinhaRepository iLinhaRepository, CategoriaService categoriaService, ICategoriaRepository iCategoriaRepository){
+    public LinhaService(ILinhaRepository iLinhaRepository, ICategoriaRepository iCategoriaRepository) {
         this.iLinhaRepository = iLinhaRepository;
-        this.categoriaService = categoriaService;
+
         this.iCategoriaRepository = iCategoriaRepository;
     }
 
 //CADASTRAR LINHAS
 
-    public LinhaDTO save (LinhaDTO linhaDTO){
+    public LinhaDTO save(LinhaDTO linhaDTO) {
 
-        Optional<Categoria> categoriaOptional = this.categoriaService.findOptionalinById(linhaDTO.getCategorialinha().getId());
+        Optional<Categoria> categoriaOptional = this.iCategoriaRepository.findOptionalinById(linhaDTO.getCategorialinha().getId());
 
-        this.validate (linhaDTO);
+        this.validate(linhaDTO);
 
         LOGGER.info("salvando Linhas");
         LOGGER.debug("Linha : {}", linhaDTO);
@@ -50,24 +47,34 @@ public class LinhaService {
 
         Linha linha = new Linha();
 
-            linha.setNome(linhaDTO.getNome());
-            linha.setCategorialinha(categoria);
-            linha.setCodigolinha(linhaDTO.getCodigolinha());
-            linha = this.iLinhaRepository.save(linha);
-            return LinhaDTO.of(linha);
+        String codR = codigoValidar(linhaDTO.getCodigolinha());
+
+        linha.setNome(linhaDTO.getNome());
+        linha.setCategorialinha(categoria);
+        linha.setCodigolinha(linhaDTO.getCodigolinha());
+        linha = this.iLinhaRepository.save(linha);
+        return LinhaDTO.of(linha);
 
     }
-//VALIDACOES
-    private void validate(LinhaDTO linhaDTO){
+
+    public String codigoValidar(String codigo) {
+        String codigoProcessador = StringUtils.leftPad(codigo, 3, "0");
+
+        return codigoProcessador;
+
+    }
+
+    //VALIDACOES
+    private void validate(LinhaDTO linhaDTO) {
         LOGGER.info("Validando Linhas");
 
-        if(linhaDTO == null){
+        if (linhaDTO == null) {
             throw new IllegalArgumentException("A categoria nao pode ser nulo");
         }
-        if(StringUtils.isEmpty(linhaDTO.getNome())){
-            throw  new IllegalArgumentException("O nome da linha nao pode ser nulo");
+        if (StringUtils.isEmpty(linhaDTO.getNome())) {
+            throw new IllegalArgumentException("O nome da linha nao pode ser nulo");
         }
-        if(StringUtils.isEmpty(linhaDTO.getCodigolinha())) {
+        if (StringUtils.isEmpty(linhaDTO.getCodigolinha())) {
             throw new IllegalArgumentException("o codigo da linha nao pode ser nulo");
         }
 
@@ -75,14 +82,15 @@ public class LinhaService {
 
 //METODOS DE PESQUISA
 
-    public LinhaDTO findById(Long id){
+    public LinhaDTO findById(Long id) {
         Optional<Linha> linhaOptional = this.iLinhaRepository.findById(id);
 
-        if(linhaOptional.isPresent()){
+        if (linhaOptional.isPresent()) {
             return LinhaDTO.of(linhaOptional.get());
         }
         throw new IllegalArgumentException(String.format("o %s id nao existente", id));
     }
+
     public Optional<Linha> findOptionalById(Long id) {
         Optional<Linha> linhaOptional = this.iLinhaRepository.findById(id);
         if (linhaOptional.isPresent()) {
@@ -151,14 +159,14 @@ public class LinhaService {
                 Linha linha = new Linha();
 
 
-                    linha.setNome((dados[1]));
-                    Optional<Categoria> categoria = (iCategoriaRepository.findByCodigoCategoria(dados[2]));
-                    linha.setCodigolinha(dados[0]);
+                linha.setNome((dados[1]));
+                Optional<Categoria> categoria = (iCategoriaRepository.findByCodigoCategoria(dados[2]));
+                linha.setCodigolinha(dados[0]);
 
 
-                    linha.setCategorialinha(categoria.get());
+                linha.setCategorialinha(categoria.get());
 //                    resultado.add(linha);
-                    System.out.println(resultado);
+                System.out.println(resultado);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -168,51 +176,5 @@ public class LinhaService {
         iCategoriaRepository.saveAll(resultado);
 
     }
-//VALIDACOES
-
-    public String codigoCNPJ(CategoriaDTO categoriaDTO) {
-        LOGGER.info("Codigo ...");
-        Optional<Linha> linhaOptional = this.iLinhaRepository.findBycodigolinha(categoriaDTO.getCodigoCategoria());
-
-        String Cod = "";
-        String Cod1 = "";
-        String Cod2 = linhaOptional.get().getCodigolinha();
-        String Cod3 = "";
-
-//        if (categoriaDTO.getCodigoCategoria().length() == 9) {
-//            Cod3 = "0" + categoriaDTO.getCodigoCategoria();
-//        }
-//        if (categoriaDTO.getCodigoCategoria().length() == 8) {
-//            Cod3 = "00" + categoriaDTO.getCodigoCategoria();
-//        }
-//        if (categoriaDTO.getCodigoCategoria().length() == 7) {
-//            Cod3 = "000" + categoriaDTO.getCodigoCategoria();
-//        }
-//        if (categoriaDTO.getCodigoCategoria().length() == 6) {
-//            Cod3 = "0000" + categoriaDTO.getCodigoCategoria();
-//        }
-//        if (categoriaDTO.getCodigoCategoria().length() == 5) {
-//            Cod3 = "00000" + categoriaDTO.getCodigoCategoria();
-//        }
-//        if (categoriaDTO.getCodigoCategoria().length() == 4) {
-//            Cod3 = "000000" + categoriaDTO.getCodigoCategoria();
-//        }
-//        if (categoriaDTO.getCodigoCategoria().length() == 3) {
-//            Cod3 = "0000000" + categoriaDTO.getCodigoCategoria();
-//        }
-//        if (categoriaDTO.getCodigoCategoria().length() == 2) {
-//            Cod3 = "00000000" + categoriaDTO.getCodigoCategoria();
-//        }
-//        if (categoriaDTO.getCodigoCategoria().length() == 1) {
-//            Cod3 = "000000000" + categoriaDTO.getCodigoCategoria();
-//        }
-
-
-        Cod = Cod1 + Cod2 + Cod3;
-
-        return Cod;
-    }
-
-
 
 }
