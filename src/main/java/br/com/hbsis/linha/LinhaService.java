@@ -132,14 +132,16 @@ public class LinhaService {
                 .withEscapeChar(CSVWriter.DEFAULT_ESCAPE_CHARACTER)
                 .withLineEnd(CSVWriter.DEFAULT_LINE_END).build();
 
-        String[] tituloCSV = {"id", "nome", "cateogrialinha", "codigolinha"};
+        String[] tituloCSV = {"codigolinha", "nome", "cateogrialinha" , "nomeCategoria"};
         icsvWriter.writeNext(tituloCSV);
 
         for (Linha linhas : iLinhaRepository.findAll()) {
-            icsvWriter.writeNext(new String[]{String.valueOf(linhas.getId()),
+            icsvWriter.writeNext(new String[]{
+                    linhas.getCodigolinha(),
                     linhas.getNome(),
-//                    String.valueOf(linhas.getCategorialinha().getId()),
-                    linhas.getCodigolinha()});
+                    String.valueOf(linhas.getCategoria().getCodigoCategoria()),
+                    String.valueOf(linhas.getCategoria().getNomeCategoria())
+            });
         }
     }
 
