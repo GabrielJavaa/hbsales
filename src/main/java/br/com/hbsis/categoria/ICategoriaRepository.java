@@ -11,6 +11,6 @@ public interface ICategoriaRepository extends JpaRepository<Categoria, Long> {
     boolean existsByNomeCategoria(String nomeCategoria);
 
     Optional<Categoria> findByCodigoCategoria(String codigoCategoria);
-    Optional<Categoria> findOptionalinById(Long id);
+
 
 }

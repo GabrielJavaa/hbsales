@@ -19,7 +19,7 @@ public class Linha {
 
     @ManyToOne
     @JoinColumn(name ="categorialinha" , referencedColumnName = "id")
-    private Categoria categorialinha;
+    private Categoria categoria;
 
     @Column(name = "codigolinha", unique = true, nullable = false, length = 10)
     private String codigolinha;
@@ -40,12 +40,12 @@ public class Linha {
         this.nome = nome;
     }
 
-    public Categoria getCategorialinha() {
-        return categorialinha;
+    public Categoria getCategoria() {
+        return categoria;
     }
 
-    public void setCategorialinha(Categoria categorialinha) {
-        this.categorialinha = categorialinha;
+    public void setCategoria(Categoria categorialinha) {
+        this.categoria = categorialinha;
     }
 
     public String getCodigolinha() {
@@ -61,7 +61,7 @@ public class Linha {
         return "linha{" +
                 "id=" + id +
                 ", nome ='" + nome + '\'' +
-                ", categorialinha   ='" + categorialinha + '\'' +
+                ", categorialinha   ='" + categoria + '\'' +
                 ", codigolinha  ='" + codigolinha + '\'' +
                 '}';
     }

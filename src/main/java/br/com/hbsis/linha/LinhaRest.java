@@ -19,7 +19,7 @@ public class LinhaRest {
     private final LinhaService linhaService;
 
     @Autowired
-    public LinhaRest(ILinhaRepository iLinhaRepository, LinhaService linhaService){
+    public LinhaRest( LinhaService linhaService){
         this.linhaService = linhaService;
     }
     @PostMapping

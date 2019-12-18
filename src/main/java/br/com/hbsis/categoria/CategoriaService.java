@@ -1,8 +1,6 @@
 package br.com.hbsis.categoria;
 
 import br.com.hbsis.fornecedor.Fornecedor;
-import br.com.hbsis.fornecedor.FornecedorDTO;
-import br.com.hbsis.fornecedor.FornecedorService;
 import br.com.hbsis.fornecedor.IFornecedorRepository;
 import com.google.common.net.HttpHeaders;
 import com.opencsv.*;
@@ -48,10 +46,9 @@ public class CategoriaService<ExportCSV> {
         Categoria categoria = new Categoria();
 
         Fornecedor fornecedor = fornecedorOptional.get();
-        System.out.println(fornecedor);
+
 
         String codigo = categoriaDTO.getCodigoCategoria();
-        System.out.println(fornecedor.getCnpj());
         String cnp = fornecedor.getCnpj();
         String cate = quatroCNPJ(cnp);
 
