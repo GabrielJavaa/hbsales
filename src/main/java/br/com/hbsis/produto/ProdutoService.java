@@ -2,6 +2,7 @@ package br.com.hbsis.produto;
 
 
 import br.com.hbsis.categoria.Categoria;
+import br.com.hbsis.linha.ILinhaRepository;
 import br.com.hbsis.linha.Linha;
 import br.com.hbsis.linha.LinhaService;
 import com.google.common.net.HttpHeaders;
@@ -23,16 +24,16 @@ public class ProdutoService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProdutoService.class);
 
     private final IProdutoRepository iProdutoRepository;
-    private final LinhaService linhaService;
+    private final ILinhaRepository iLinhaRepository;
 
-    public ProdutoService(IProdutoRepository iProdutoRepository, LinhaService linhaService){
+    public ProdutoService(IProdutoRepository iProdutoRepository,ILinhaRepository iLinhaRepository){
         this.iProdutoRepository = iProdutoRepository;
-        this.linhaService = linhaService;
+        this.iLinhaRepository = iLinhaRepository;
     }
 
     public ProdutoDTO save(ProdutoDTO produtoDTO){
 
-        Optional<Linha> linhaOptional = this.linhaService.findOptionalById(produtoDTO.getId());
+        Optional<Linha> linhaOptional = this.iLinhaRepository.findById(produtoDTO.getId());
 
         this.validate(produtoDTO);
 
@@ -66,6 +67,7 @@ public class ProdutoService {
         if (StringUtils.isEmpty(produtoDTO.getNome())){
             throw new  IllegalArgumentException("O nome nao pode ser nulo");
         }
+
 
     }
     public ProdutoDTO findById(Long id) {

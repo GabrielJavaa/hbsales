@@ -1,26 +1,26 @@
 package br.com.hbsis.linha;
-
 import br.com.hbsis.categoria.Categoria;
+
 
 public class LinhaDTO {
     private Long id;
     private String nome;
-    private Categoria categorialinha;
     private String codigolinha;
+    private Long categorialinha;
 
-    public LinhaDTO(Long id, String nome, Categoria categorialinha, String codigolinha){
+    public LinhaDTO(Long id, String nome, String codigolinha, Long categorialinha){
         this.id = id;
         this.nome = nome;
-        this.categorialinha = categorialinha;
         this.codigolinha = codigolinha;
+        this.categorialinha = categorialinha;
     }
 
     public static LinhaDTO of(Linha linha){
         return new LinhaDTO(
             linha.getId(),
             linha.getNome(),
-            linha.getCategorialinha(),
-            linha.getCodigolinha()
+            linha.getCodigolinha(),
+            linha.getCategoria().getId()
         );
     }
 
@@ -40,19 +40,19 @@ public class LinhaDTO {
         this.nome = nome;
     }
 
-    public Categoria getCategorialinha() {
-        return categorialinha;
-    }
-
-    public void setCategorialinha(Categoria categorialinha) {
-        this.categorialinha = categorialinha;
-    }
-
     public String getCodigolinha() {
         return codigolinha;
     }
 
     public void setCodigolinha(String codigolinha) {
         this.codigolinha = codigolinha;
+    }
+
+    public Long getCategorialinha() {
+        return categorialinha;
+    }
+
+    public void setCategorialinha(Long categorialinha) {
+        this.categorialinha = categorialinha;
     }
 }

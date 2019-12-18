@@ -23,12 +23,10 @@ public class LinhaService {
     private static final Logger LOGGER = LoggerFactory.getLogger(LinhaService.class);
 
     private final ILinhaRepository iLinhaRepository;
-
     private final ICategoriaRepository iCategoriaRepository;
 
     public LinhaService(ILinhaRepository iLinhaRepository, ICategoriaRepository iCategoriaRepository) {
         this.iLinhaRepository = iLinhaRepository;
-
         this.iCategoriaRepository = iCategoriaRepository;
     }
 
@@ -36,31 +34,34 @@ public class LinhaService {
 
     public LinhaDTO save(LinhaDTO linhaDTO) {
 
-        Optional<Categoria> categoriaOptional = this.iCategoriaRepository.findOptionalinById(linhaDTO.getCategorialinha().getId());
+        Optional<Categoria> categoriaOptional = this.iCategoriaRepository.findById(linhaDTO.getCategorialinha());
 
         this.validate(linhaDTO);
 
         LOGGER.info("salvando Linhas");
-        LOGGER.debug("Linha : {}", linhaDTO);
-
-        Categoria categoria = categoriaOptional.get();
+        LOGGER.debug("Linha: {}", linhaDTO);
 
         Linha linha = new Linha();
 
+        Categoria categoria = categoriaOptional.get();
+        System.out.println(categoria);
+
         String codR = codigoValidar(linhaDTO.getCodigolinha());
+        System.out.println(codR);
 
         linha.setNome(linhaDTO.getNome());
-        linha.setCategorialinha(categoria);
-        linha.setCodigolinha(linhaDTO.getCodigolinha());
+        linha.setCategoria(categoria);
+        linha.setCodigolinha(codR);
+
         linha = this.iLinhaRepository.save(linha);
         return LinhaDTO.of(linha);
 
     }
 
-    public String codigoValidar(String codigo) {
-        String codigoProcessador = StringUtils.leftPad(codigo, 3, "0");
+    public String codigoValidar(String Codigolinha) {
+        String codigo = StringUtils.leftPad(Codigolinha, 9, "0");
 
-        return codigoProcessador;
+        return codigo;
 
     }
 
@@ -91,18 +92,14 @@ public class LinhaService {
         throw new IllegalArgumentException(String.format("o %s id nao existente", id));
     }
 
-    public Optional<Linha> findOptionalById(Long id) {
-        Optional<Linha> linhaOptional = this.iLinhaRepository.findById(id);
-        if (linhaOptional.isPresent()) {
-            return linhaOptional;
-        }
-        throw new IllegalArgumentException(String.format("id %s nao existe", id));
-    }
-
 //ALTERAR LINHAS
 
     public LinhaDTO update(LinhaDTO linhaDTO, Long id) {
         Optional<Linha> linhaExisteteOptional = this.iLinhaRepository.findById(id);
+
+        this.validate(linhaDTO);
+
+        Categoria categoria = linhaExisteteOptional.get().getCategoria();
 
         if (linhaExisteteOptional.isPresent()) {
             Linha linhaExistente = linhaExisteteOptional.get();
@@ -112,7 +109,7 @@ public class LinhaService {
             LOGGER.debug("linha existente : {}", linhaExistente);
 
             linhaExistente.setNome(linhaDTO.getNome());
-            linhaExistente.setCategorialinha(linhaDTO.getCategorialinha());
+            linhaExistente.setCategoria(categoria);
             linhaExistente.setCodigolinha(linhaDTO.getCodigolinha());
 
             linhaExistente = this.iLinhaRepository.save(linhaExistente);
@@ -131,12 +128,18 @@ public class LinhaService {
 
         PrintWriter escritor = reponde.getWriter();
 
-        ICSVWriter icsvWriter = new CSVWriterBuilder(escritor).withSeparator(';').withEscapeChar(CSVWriter.DEFAULT_ESCAPE_CHARACTER).withLineEnd(CSVWriter.DEFAULT_LINE_END).build();
+        ICSVWriter icsvWriter = new CSVWriterBuilder(escritor).withSeparator(';')
+                .withEscapeChar(CSVWriter.DEFAULT_ESCAPE_CHARACTER)
+                .withLineEnd(CSVWriter.DEFAULT_LINE_END).build();
+
         String[] tituloCSV = {"id", "nome", "cateogrialinha", "codigolinha"};
         icsvWriter.writeNext(tituloCSV);
 
         for (Linha linhas : iLinhaRepository.findAll()) {
-            icsvWriter.writeNext(new String[]{String.valueOf(linhas.getId()), linhas.getNome(), String.valueOf(linhas.getCategorialinha().getId()), linhas.getCodigolinha().toString()});
+            icsvWriter.writeNext(new String[]{String.valueOf(linhas.getId()),
+                    linhas.getNome(),
+//                    String.valueOf(linhas.getCategorialinha().getId()),
+                    linhas.getCodigolinha()});
         }
     }
 
@@ -164,7 +167,7 @@ public class LinhaService {
                 linha.setCodigolinha(dados[0]);
 
 
-                linha.setCategorialinha(categoria.get());
+//                linha.setCategorialinha(categoria.get());
 //                    resultado.add(linha);
                 System.out.println(resultado);
 

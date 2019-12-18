@@ -20,7 +20,7 @@ public class CategoriaDTO {
         return new CategoriaDTO(
             categoria.getId(),
             categoria.getNomeCategoria(),
-             categoria.getCodigoCategoria()
+            categoria.getCodigoCategoria()
 
 
         );
@@ -37,8 +37,6 @@ public class CategoriaDTO {
     public void setNomeCategoria(String nomeCategoria) {
         this.nomeCategoria = nomeCategoria;
     }
-
-
 
     public String getCodigoCategoria() {
         return codigoCategoria;
