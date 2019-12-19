@@ -210,5 +210,23 @@ public class CategoriaService<ExportCSV> {
             throw new IllegalArgumentException("codigo categoria não pode ser nulo");
         }
     }
+
+    public CategoriaDTO findByCodigoCategoria(String codigoCat) {
+
+        Optional<Categoria> categoriaOptional = this.iCategoriaRepository.findByCodigoCategoria(codigoCat);
+
+        if (categoriaOptional.isPresent()) {
+            return CategoriaDTO.of(categoriaOptional.get());
+        }
+
+        throw new IllegalArgumentException(String.format("Codigo %s não existe", codigoCat));
+    }
+
+    public Categoria converter(CategoriaDTO categoriaDTO){
+        Categoria categoria = new Categoria();
+        categoria.setId(categoriaDTO.getId());
+        return categoria;
+    }
+
 }
 

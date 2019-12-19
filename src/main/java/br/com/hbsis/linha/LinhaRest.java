@@ -47,7 +47,7 @@ public class LinhaRest {
 
     @PostMapping("/importarcsv")
     public void importCSV(@RequestParam("file") MultipartFile file) throws Exception {
-        linhaService.ler(file);
+        linhaService.lerlinha(file);
     }
 
 }
