@@ -1,12 +1,15 @@
 package br.com.hbsis.linha;
 
 import br.com.hbsis.categoria.Categoria;
+import br.com.hbsis.categoria.CategoriaDTO;
+import br.com.hbsis.categoria.CategoriaService;
 import br.com.hbsis.categoria.ICategoriaRepository;
 import com.google.common.net.HttpHeaders;
 import com.opencsv.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,12 +28,17 @@ public class LinhaService {
     private final ILinhaRepository iLinhaRepository;
     private final ICategoriaRepository iCategoriaRepository;
 
-    public LinhaService(ILinhaRepository iLinhaRepository, ICategoriaRepository iCategoriaRepository) {
+    /* TESTE */
+    private final CategoriaService categoriaService;
+
+    @Autowired
+    public LinhaService(ILinhaRepository iLinhaRepository, ICategoriaRepository iCategoriaRepository, CategoriaService categoriaService) {
         this.iLinhaRepository = iLinhaRepository;
         this.iCategoriaRepository = iCategoriaRepository;
+        this.categoriaService = categoriaService;
     }
 
-//CADASTRAR LINHAS
+    //CADASTRAR LINHAS
 
     public LinhaDTO save(LinhaDTO linhaDTO) {
 
@@ -91,6 +99,14 @@ public class LinhaService {
         }
         throw new IllegalArgumentException(String.format("o %s id nao existente", id));
     }
+    public LinhaDTO findByCodigoLinha(String codigolinha){
+        Optional<Linha> linhaOptional = this.iLinhaRepository.findByCodigolinha(codigolinha);
+
+        if (linhaOptional.isPresent()) {
+            return LinhaDTO.of(linhaOptional.get());
+        }
+        throw new IllegalArgumentException(String.format("o %s codigo da linha nao existente", codigolinha));
+    }
 
 //ALTERAR LINHAS
 
@@ -145,41 +161,45 @@ public class LinhaService {
         }
     }
 
-
-    public void ler(MultipartFile importacao) throws Exception {
+    public void lerlinha(MultipartFile importacao) throws Exception {
         InputStreamReader inserir = new InputStreamReader(importacao.getInputStream());
 
 
         CSVReader leitor = new CSVReaderBuilder(inserir).withSkipLines(1).build();
 
         List<String[]> linhaLer = leitor.readAll();
-        List<Categoria> resultado = new ArrayList<>();
+        List<Linha> resultado = new ArrayList<>();
 
         for (String[] lin : linhaLer) {
 
             try {
 
-                String[] dados = lin[0].replaceAll("\"", "").split(";");
+                        String[] dados = lin[0].replaceAll("\"", "").split(";");
 
-                Linha linha = new Linha();
-
-
-                linha.setNome((dados[1]));
-                Optional<Categoria> categoria = (iCategoriaRepository.findByCodigoCategoria(dados[2]));
-                linha.setCodigolinha(dados[0]);
+                if ( iLinhaRepository.existsByCodigolinha(dados [0])){
+                    LOGGER.info("codigo da categoria ja existe...");
+                }else if ( !iLinhaRepository.existsByCodigolinha(dados [0])){
 
 
-//                linha.setCategorialinha(categoria.get());
-//                    resultado.add(linha);
-                System.out.println(resultado);
+
+                        Linha linha = new Linha();
+
+                        linha.setCodigolinha(dados[0]);
+                        linha.setNome(dados[1]);
+
+                        CategoriaDTO categoriaDTO = categoriaService.findByCodigoCategoria(dados[2]);
+                        Categoria categoria = categoriaService.converter(categoriaDTO);
+                        linha.setCategoria(categoria);
+
+                        resultado.add(linha);
+                        System.out.println(resultado);
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
-
             }
         }
-        iCategoriaRepository.saveAll(resultado);
-
+        iLinhaRepository.saveAll(resultado);
     }
 
 }

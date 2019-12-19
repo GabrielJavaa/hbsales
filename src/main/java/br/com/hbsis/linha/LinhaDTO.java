@@ -1,12 +1,14 @@
 package br.com.hbsis.linha;
-import br.com.hbsis.categoria.Categoria;
 
+
+import br.com.hbsis.categoria.Categoria;
 
 public class LinhaDTO {
     private Long id;
     private String nome;
     private String codigolinha;
     private Long categorialinha;
+
 
     public LinhaDTO(Long id, String nome, String codigolinha, Long categorialinha){
         this.id = id;
@@ -48,9 +50,7 @@ public class LinhaDTO {
         this.codigolinha = codigolinha;
     }
 
-    public Long getCategorialinha() {
-        return categorialinha;
-    }
+    public Long getCategorialinha() { return categorialinha; }
 
     public void setCategorialinha(Long categorialinha) {
         this.categorialinha = categorialinha;

@@ -11,6 +11,4 @@ public interface IFornecedorRepository extends JpaRepository<Fornecedor, Long> {
 
     Optional<Fornecedor> findByCnpj(String cnpj);
 
-    Optional<Fornecedor> findById(Fornecedor fornecedor);
-
 }

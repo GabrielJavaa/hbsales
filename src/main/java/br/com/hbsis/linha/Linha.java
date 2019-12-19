@@ -40,9 +40,7 @@ public class Linha {
         this.nome = nome;
     }
 
-    public Categoria getCategoria() {
-        return categoria;
-    }
+    public Categoria getCategoria() { return categoria; }
 
     public void setCategoria(Categoria categorialinha) {
         this.categoria = categorialinha;
