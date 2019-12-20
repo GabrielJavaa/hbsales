@@ -2,9 +2,9 @@ package br.com.hbsis.produto;
 
 
 import br.com.hbsis.linha.Linha;
-import com.opencsv.bean.CsvBindByPosition;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "produto")
@@ -12,37 +12,32 @@ public class Produto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @CsvBindByPosition(position = 0)
     private long id;
 
-    @Column(name = "codigo_produto",nullable = false , length = 10)
-    @CsvBindByPosition(position = 1)
+    @Column(name = "codigo_produto", nullable = false, length = 10)
     private String codigoProduto;
 
     @Column(name = "nome", nullable = false, length = 40)
-    @CsvBindByPosition(position = 2)
     private String nome;
 
-    @Column(name = "preco", nullable = false)
-    @CsvBindByPosition(position = 3)
-    private float preco;
+    @Column(name = "preco", nullable = false, length = 5)
+    private double preco;
 
     @ManyToOne
     @JoinColumn(name = "linha_categoria", referencedColumnName = "id")
-    @CsvBindByPosition(position = 4)
     private Linha linhaCategoria;
 
     @Column(name = "unidade_caixa", nullable = false, length = 40)
-    @CsvBindByPosition(position = 5)
     private String unidadeCaixa;
 
     @Column(name = "peso_unidade", nullable = false)
-    @CsvBindByPosition(position = 6)
     private float pesoUnidade;
 
+    @Column(name = "unidademedida", nullable = false, length = 5)
+    private String unidademedida;
+
     @Column(name = "validade", nullable = false)
-    @CsvBindByPosition(position = 7)
-    private int validade;
+    private LocalDate validade;
 
 
     public long getId() {
@@ -69,11 +64,11 @@ public class Produto {
         this.nome = nome;
     }
 
-    public float getPreco() {
+    public double getPreco() {
         return preco;
     }
 
-    public void setPreco(float preco) {
+    public void setPreco(double preco) {
         this.preco = preco;
     }
 
@@ -101,13 +96,18 @@ public class Produto {
         this.pesoUnidade = pesoUnidade;
     }
 
-    public int getValidade() {
+    public String getUnidadeMedida() { return unidademedida; }
+
+    public void setUnidadeMedida(String unidademedida) { this.unidademedida = unidademedida; }
+
+    public LocalDate getValidade() {
         return validade;
     }
 
-    public void setValidade(int validade) {
+    public void setValidade(LocalDate validade) {
         this.validade = validade;
     }
+
     @Override
     public String toString() {
         return "Produto{" +
@@ -118,6 +118,7 @@ public class Produto {
                 ", linhaCategoria='" + linhaCategoria + '\'' +
                 ", unidadeCaixa='" + unidadeCaixa + '\'' +
                 ", pesoUnidade='" + pesoUnidade + '\'' +
+                ", unidademedida='" + unidademedida + '\'' +
                 ", validade='" + validade + '\'' +
                 '}';
     }

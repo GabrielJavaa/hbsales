@@ -1,0 +1,1 @@
+ALTER TABLE produto ALTER COLUMN unidademedida VARCHAR(2) NOT NULL;

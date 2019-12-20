@@ -1,18 +1,19 @@
 package br.com.hbsis.produto;
 
-import br.com.hbsis.linha.Linha;
+import java.time.LocalDate;
 
 public class ProdutoDTO {
     private Long id;
     private String codigoProduto;
     private String nome;
-    private Float preco;
-    private Linha linhaCategoria;
+    private Double preco;
+    private Long linhaCategoria;
     private String unidadeCaixa;
     private Float pesoUnidade;
-    private Integer validade;
+    private String unidadeMedida;
+    private LocalDate validade;
 
-    public ProdutoDTO(Long id, String codigoProduto, String nome, Float preco, Linha linhaCategoria, String unidadeCaixa, Float pesoUnidade, Integer validade){
+    public ProdutoDTO(Long id, String codigoProduto, String nome, Double preco, Long linhaCategoria, String unidadeCaixa, Float pesoUnidade, String unidadeMedida, LocalDate validade) {
         this.id = id;
         this.codigoProduto = codigoProduto;
         this.nome = nome;
@@ -20,18 +21,20 @@ public class ProdutoDTO {
         this.linhaCategoria = linhaCategoria;
         this.unidadeCaixa = unidadeCaixa;
         this.pesoUnidade = pesoUnidade;
+        this.unidadeMedida = unidadeMedida;
         this.validade = validade;
     }
 
-    public static ProdutoDTO of(Produto produto){
+    public static ProdutoDTO of(Produto produto) {
         return new ProdutoDTO(
                 produto.getId(),
                 produto.getCodigoProduto(),
                 produto.getNome(),
                 produto.getPreco(),
-                produto.getLinhaCategoria(),
+                produto.getLinhaCategoria().getId(),
                 produto.getUnidadeCaixa(),
                 produto.getPesoUnidade(),
+                produto.getUnidadeMedida(),
                 produto.getValidade()
 
         );
@@ -57,23 +60,19 @@ public class ProdutoDTO {
         return nome;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
+    public void setNome(String nome) { this.nome = nome; }
 
-    public Float getPreco() {
+    public Double getPreco() {
         return preco;
     }
 
-    public void setPreco(Float preco) {
+    public void setPreco(Double preco) {
         this.preco = preco;
     }
 
-    public Linha getLinhaCategoria() {
-        return linhaCategoria;
-    }
+    public Long getLinhaCategoria() { return linhaCategoria; }
 
-    public void setLinhaCategoria(Linha linhaCategoria) {
+    public void setLinhaCategoria(Long linhaCategoria) {
         this.linhaCategoria = linhaCategoria;
     }
 
@@ -93,13 +92,18 @@ public class ProdutoDTO {
         this.pesoUnidade = pesoUnidade;
     }
 
-    public Integer getValidade() {
+    public String getUnidadeMedida() { return unidadeMedida; }
+
+    public void setUnidadeMedida(String unidadeMedida) { this.unidadeMedida = unidadeMedida; }
+
+    public LocalDate getValidade() {
         return validade;
     }
 
-    public void setValidade(Integer validade) {
+    public void setValidade(LocalDate validade) {
         this.validade = validade;
     }
+
     @Override
     public String toString() {
         return "UsuarioDTO{" +
@@ -110,6 +114,7 @@ public class ProdutoDTO {
                 ", linhaCategoria='" + linhaCategoria + '\'' +
                 ", unidadeCaixa='" + unidadeCaixa + '\'' +
                 ", pesoUnidade='" + pesoUnidade + '\'' +
+                ", unidademedida='" + unidadeMedida + '\''+
                 ", validade='" + validade + '\'' +
                 '}';
     }

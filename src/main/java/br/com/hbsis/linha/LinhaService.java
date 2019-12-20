@@ -59,20 +59,24 @@ public class LinhaService {
 
         linha.setNome(linhaDTO.getNome());
         linha.setCategoria(categoria);
-        linha.setCodigolinha(codR);
+        linha.setCodigolinha(codR.toUpperCase());
 
         linha = this.iLinhaRepository.save(linha);
         return LinhaDTO.of(linha);
 
     }
 
+    public Linha converter(LinhaDTO linhaDTO){
+        Linha linha = new Linha();
+        linha.setId(linhaDTO.getId());
+        return linha;
+    }
+
     public String codigoValidar(String Codigolinha) {
         String codigo = StringUtils.leftPad(Codigolinha, 9, "0");
 
         return codigo;
-
     }
-
     //VALIDACOES
     private void validate(LinhaDTO linhaDTO) {
         LOGGER.info("Validando Linhas");
@@ -99,14 +103,24 @@ public class LinhaService {
         }
         throw new IllegalArgumentException(String.format("o %s id nao existente", id));
     }
-    public LinhaDTO findByCodigoLinha(String codigolinha){
-        Optional<Linha> linhaOptional = this.iLinhaRepository.findByCodigolinha(codigolinha);
+    public LinhaDTO findByCategoriaLinha(String categorialinha){
+        Optional<Linha> linhaOptional = this.iLinhaRepository.findByCodigolinha(categorialinha);
 
         if (linhaOptional.isPresent()) {
             return LinhaDTO.of(linhaOptional.get());
         }
-        throw new IllegalArgumentException(String.format("o %s codigo da linha nao existente", codigolinha));
+        throw new IllegalArgumentException(String.format("o %s codigo da linha nao existente", categorialinha));
     }
+
+    public LinhaDTO findLinha(Long id){
+        Optional<Linha> linhaOptional = this.iLinhaRepository.findById(id);
+
+        if (linhaOptional.isPresent()) {
+            return LinhaDTO.of(linhaOptional.get());
+        }
+        throw new IllegalArgumentException(String.format("o %s codigo da linha nao existente", id));
+    }
+
 
 //ALTERAR LINHAS
 
@@ -134,6 +148,7 @@ public class LinhaService {
         }
         throw new IllegalArgumentException(String.format("id %s nao existente", id));
     }
+
 //EXPORT E IMPORT DOS CSV
 
 
