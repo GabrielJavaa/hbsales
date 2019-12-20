@@ -38,15 +38,13 @@ public class ProdutoRest {
 
         return this.produtoService.update(produtoDTO,id);
     }
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable("id") Long id){
-        LOGGER.info("Deletando produtos pelo id : {}", id);
-
-        this.produtoService.delete(id);
-    }
     @GetMapping("/export.csv")
     public void exportCSV(HttpServletResponse file) throws Exception {
-        produtoService.escreverLinha(file);
+        produtoService.escreverProduto(file);
     }
+//    @PostMapping("/importcsv")
+//    public void importCSV(@RequestParam("file") MultipartFile file) throws Exception {
+//        produtoService.lerProduto(file);
+//    }
 
 }

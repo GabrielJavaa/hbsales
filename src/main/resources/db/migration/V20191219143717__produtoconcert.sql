@@ -1,0 +1,6 @@
+ALTER TABLE produto DROP COLUMN validade;
+ALTER TABLE produto ALTER COLUMN preco DECIMAL(5,2) NOT NULL;
+ALTER TABLE produto ALTER COLUMN peso_unidade DECIMAL(5,3) NOT NULL;
+
+ALTER TABLE produto ADD unidademedida FLOAT NOT NULL;
+ALTER TABLE produto ADD validade DATE NOT NULL;
