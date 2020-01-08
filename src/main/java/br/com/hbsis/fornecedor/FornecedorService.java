@@ -13,6 +13,7 @@ public class FornecedorService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FornecedorService.class);
 
+
     private final IFornecedorRepository iFornecedorRepository;
 
     public FornecedorService(IFornecedorRepository iFornecedorRepository) {
@@ -27,6 +28,7 @@ public class FornecedorService {
         LOGGER.debug("Fornecedor: {}", fornecedorDTO);
 
         Fornecedor fornecedor = new Fornecedor();
+
 
         fornecedor.setRazaoSocial(fornecedorDTO.getRazaoSocial());
         fornecedor.setCnpj(fornecedorDTO.getCnpj());
@@ -66,6 +68,8 @@ public class FornecedorService {
         }
     }
 
+
+
     public FornecedorDTO findById(Long id) {
 
         Optional<Fornecedor> fornecedorOptional = this.iFornecedorRepository.findById(id);
@@ -75,6 +79,18 @@ public class FornecedorService {
         }
 
         throw new IllegalArgumentException(String.format("id %s não existente", id));
+    }
+
+    public Fornecedor  findOptionalById(Long id){
+
+        Optional<Fornecedor> fornecedorOptional = this.iFornecedorRepository.findOptionalById(id);
+        if (fornecedorOptional.isPresent()){
+            return fornecedorOptional.get();
+
+        }else{
+            throw new IllegalArgumentException(String.format("Fornecedor de id %s inexistente",id));
+        }
+
     }
 
     public FornecedorDTO update(FornecedorDTO fornecedorDTO, Long id) {
@@ -104,5 +120,25 @@ public class FornecedorService {
 
         throw new IllegalArgumentException(String.format("id %s nao existente", id));
     }
+
+
+    public boolean existById(Long id){
+        return iFornecedorRepository.existsById(id);
+    }
+
+    public Fornecedor findByFornecedorCnpj(String cnpj){
+        Optional<Fornecedor> fornecedorOptional = this.iFornecedorRepository.findByCnpj(cnpj);
+
+        if (fornecedorOptional.isPresent()){
+            return fornecedorOptional.get();
+        }else {
+            throw new IllegalArgumentException(String.format("cnpj %s nao existe", cnpj));
+        }
+    }
+
+
+
+
+
 
 }

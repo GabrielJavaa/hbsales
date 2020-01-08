@@ -16,7 +16,7 @@ public class Fornecedor {
     private String nomeFantasia;
     @Column(name = "endereco", unique = false, length = 60)
     private String endereco;
-    @Column(name = "telefone", unique = true, length = 13)
+    @Column(name = "telefone", unique = true, length = 15)
     private String telefone;
     @Column(name = "email", unique = true, length = 30)
     private String email;

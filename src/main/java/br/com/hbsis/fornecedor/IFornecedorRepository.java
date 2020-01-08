@@ -7,8 +7,10 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface IFornecedorRepository extends JpaRepository<Fornecedor, Long> {
+ interface IFornecedorRepository extends JpaRepository<Fornecedor, Long> {
+
 
     Optional<Fornecedor> findByCnpj(String cnpj);
 
+    Optional<Fornecedor> findOptionalById(Long id);
 }
