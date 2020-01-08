@@ -2,6 +2,7 @@ package br.com.hbsis.produto;
 
 
 import br.com.hbsis.linha.Linha;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -37,12 +38,11 @@ public class Produto {
     private String unidademedida;
 
     @Column(name = "validade", nullable = false)
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate validade;
 
 
-    public long getId() {
-        return id;
-    }
+    public long getId() { return id; }
 
     public void setId(long id) {
         this.id = id;
@@ -68,17 +68,13 @@ public class Produto {
         return preco;
     }
 
-    public void setPreco(double preco) {
-        this.preco = preco;
-    }
+    public void setPreco(double preco) { this.preco = preco; }
 
     public Linha getLinhaCategoria() {
         return linhaCategoria;
     }
 
-    public void setLinhaCategoria(Linha linhaCategoria) {
-        this.linhaCategoria = linhaCategoria;
-    }
+    public void setLinhaCategoria(Linha linhaCategoria) { this.linhaCategoria = linhaCategoria; }
 
     public String getUnidadeCaixa() {
         return unidadeCaixa;

@@ -1,8 +1,6 @@
 package br.com.hbsis.linha;
 
 
-import br.com.hbsis.categoria.Categoria;
-
 public class LinhaDTO {
     private Long id;
     private String nome;
