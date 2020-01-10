@@ -91,16 +91,6 @@ public class CategoriaService<ExportCSV> {
         throw new IllegalArgumentException(String.format("id %s não existe", id));
     }
 
-    public Categoria findByOptionalId(Long id) {
-        Optional<Categoria> categoriaOptional = this.iCategoriaRepository.findById(id);
-
-        if (categoriaOptional.isPresent()) {
-            return categoriaOptional.get();
-        } else {
-            throw new IllegalArgumentException(String.format(" id categoria %s inexistente", id));
-        }
-    }
-
     //ALTERAR A TABELA
 
     public CategoriaDTO update(CategoriaDTO categoriaDTO, Long id) {

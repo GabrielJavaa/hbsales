@@ -92,6 +92,17 @@ public class FornecedorService {
         }
 
     }
+    public Fornecedor findByIdFornecedor(Long id){
+
+        Optional<Fornecedor> fornecedorOptional = this.iFornecedorRepository.findById(id);
+        if (fornecedorOptional.isPresent()){
+            return fornecedorOptional.get();
+
+        }else{
+            throw new IllegalArgumentException(String.format("Fornecedor de id %s inexistente",id));
+        }
+
+    }
 
     public FornecedorDTO update(FornecedorDTO fornecedorDTO, Long id) {
         Optional<Fornecedor> fornecedorExistenteOptional = this.iFornecedorRepository.findById(id);

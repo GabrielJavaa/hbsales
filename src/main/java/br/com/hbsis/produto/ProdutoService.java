@@ -31,11 +31,9 @@ public class ProdutoService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProdutoService.class);
 
     private final IProdutoRepository iProdutoRepository;
-
     private final FornecedorService fornecedorService;
     private final LinhaService linhaService;
     private final CategoriaService categoriaService;
-
 
     public ProdutoService(IProdutoRepository iProdutoRepository, FornecedorService fornecedorService, LinhaService linhaService, CategoriaService categoriaService) {
         this.iProdutoRepository = iProdutoRepository;
@@ -128,7 +126,7 @@ public class ProdutoService {
 
     }
 
-    //BUSCAR PRODUTOS
+//BUSCAR PRODUTOS
 
     public ProdutoDTO findById(Long id) {
         Optional<Produto> produtoOptional = this.iProdutoRepository.findById(id);
@@ -137,14 +135,6 @@ public class ProdutoService {
             return ProdutoDTO.of(produtoOptional.get());
         }
         throw new IllegalArgumentException(String.format("id %s não existe", id));
-    }
-    public ProdutoDTO findByCodigoProduto(String codigoProduto){
-        Optional<Produto> produtoOptional = Optional.ofNullable(this.iProdutoRepository.findByCodigoProduto(codigoProduto));
-
-        if (produtoOptional.isPresent()){
-            return ProdutoDTO.of(produtoOptional.get());
-        }
-        throw new IllegalArgumentException(String.format("codigo %s nao existe", codigoProduto));
     }
 
 //ALTERAR PRODUTOS
@@ -211,7 +201,7 @@ public class ProdutoService {
         throw new IllegalArgumentException(String.format("id %s nao existente", codigoProduto));
     }
 
-    //EXPORT
+//EXPORT
     void escreverProduto(HttpServletResponse reponde) throws Exception {
 
         String nomeArquivo = "arquivoProduto.csv";
@@ -249,7 +239,7 @@ public class ProdutoService {
         }
     }
 
-    //IMPORT
+//IMPORT
     public void lerProduto(MultipartFile importacao) throws Exception {
         InputStreamReader inserir = new InputStreamReader(importacao.getInputStream());
 
@@ -445,7 +435,3 @@ public class ProdutoService {
     }
 
 }
-
-
-
-
