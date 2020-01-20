@@ -3,7 +3,6 @@ package br.com.hbsis.pedido;
 import br.com.hbsis.fornecedor.Fornecedor;
 import br.com.hbsis.funcionario.Funcionario;
 import br.com.hbsis.periodo.Periodo;
-import br.com.hbsis.produto.Produto;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -19,14 +18,11 @@ public class Pedido {
     private String codigoUnico;
     @Column(name = "status")
     private String statusPedido;
-    @Column(name = "dataPedido")
+    @Column(name = "data_pedido")
     private LocalDate dataCriacaoPedido;
     @ManyToOne
     @JoinColumn(name = "fornecedorid", referencedColumnName = "id")
     private Fornecedor fornecedor;
-    @ManyToOne
-    @JoinColumn(name = "produtoid", referencedColumnName = "id")
-    private Produto produto;
     @ManyToOne
     @JoinColumn(name = "periodoid", referencedColumnName = "id")
     private Periodo periodo;
@@ -72,14 +68,6 @@ public class Pedido {
 
     public void setFornecedor(Fornecedor fornecedor) {
         this.fornecedor = fornecedor;
-    }
-
-    public Produto getProduto() {
-        return produto;
-    }
-
-    public void setProduto(Produto produto) {
-        this.produto = produto;
     }
 
     public Periodo getPeriodo() {

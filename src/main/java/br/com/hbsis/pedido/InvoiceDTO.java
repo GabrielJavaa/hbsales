@@ -17,6 +17,9 @@ public class InvoiceDTO {
         this.invoiceItemDTOSet = invoiceItemDTOSet;
         this.total = total;
     }
+
+    public InvoiceDTO() { }
+
     public static InvoiceDTO dados(String cnpjFornecedor, String employeeUuid, List<Item> items, Double total){
         return new InvoiceDTO(cnpjFornecedor,employeeUuid,InvoiceItemDTO.dados(items), total);
     }
