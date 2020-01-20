@@ -1,7 +1,6 @@
 package br.com.hbsis.linha;
 
 
-import br.com.hbsis.categoria.Categoria;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

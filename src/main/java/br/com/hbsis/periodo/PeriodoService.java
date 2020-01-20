@@ -81,6 +81,13 @@ public class PeriodoService {
         }
         throw new IllegalArgumentException(String.format("Periodo %s não existe",id));
     }
+    public Periodo findByPeriodoId(Long id){
+        Optional<Periodo> periodoOptional = this.iPeriodoRepository.findById(id);
+        if (periodoOptional.isPresent()){
+            return periodoOptional.get();
+        }
+        throw new IllegalArgumentException(String.format("Periodo %s inexistente",id));
+    }
 
     //ALTERAR
     public PeriodoDTO update(PeriodoDTO periodoDTO, Long id){

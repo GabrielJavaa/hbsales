@@ -72,9 +72,7 @@ public class ProdutoService {
     }
 
     private String codigoValidar(String CodigoProduto) {
-        String codigoProduto = StringUtils.leftPad(CodigoProduto, 10, "0");
-
-        return codigoProduto;
+        return StringUtils.leftPad(CodigoProduto, 10, "0");
     }
 
     public void validadeUnidadeMedida(String unidademedida) {
@@ -131,10 +129,18 @@ public class ProdutoService {
     public ProdutoDTO findById(Long id) {
         Optional<Produto> produtoOptional = this.iProdutoRepository.findById(id);
 
-        if (produtoOptional.isPresent()) {
+        if (produtoOptional.isPresent())    {
             return ProdutoDTO.of(produtoOptional.get());
         }
         throw new IllegalArgumentException(String.format("id %s não existe", id));
+    }
+
+    public Produto findOptionalById(Long id){
+        Optional<Produto> produtoOptional = this.iProdutoRepository.findById(id);
+        if (produtoOptional.isPresent()){
+            return produtoOptional.get();
+        }
+        throw new IllegalArgumentException(String.format("id %s nao existe", id));
     }
 
 //ALTERAR PRODUTOS
@@ -328,7 +334,6 @@ public class ProdutoService {
                             categoria1.setCodigoCategoria(categoria.getCodigoCategoria());
 
                             categoriaService.updateCategoriaParaImportar(CategoriaDTO.of(categoria1), dados[9]);
-
                         }
                     }
                     if (!linhaService.existsByCodigolinha(dados[7])) {
@@ -339,7 +344,6 @@ public class ProdutoService {
                         linha.setNome(dados[8]);
                         linha.setCategoria(categoriaService.findByCodigoCategoria(dados[9]));
                         linhaService.saveParaImportar(LinhaDTO.of(linha));
-
                     }
 
                     if (linhaService.existsByCodigolinha(dados[7])) {
@@ -348,11 +352,9 @@ public class ProdutoService {
 
                         Categoria categoria = linhaExisteteOptional.getCategoria();
 
-                        Linha linhaExistente = linhaExisteteOptional;
-
-                        linhaExistente.setNome(linhaExisteteOptional.getNome());
-                        linhaExistente.setCategoria(categoria);
-                        linhaExistente.setCodigolinha(linhaExisteteOptional.getCodigolinha());
+                        linhaExisteteOptional.setNome(linhaExisteteOptional.getNome());
+                        linhaExisteteOptional.setCategoria(categoria);
+                        linhaExisteteOptional.setCodigolinha(linhaExisteteOptional.getCodigolinha());
 
                         linhaService.updateLinhaParaImportar(LinhaDTO.of(linhaExisteteOptional), dados[7]);
 

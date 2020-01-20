@@ -73,9 +73,7 @@ public class LinhaService {
     }
 
     public String codigoValidar(String Codigolinha) {
-        String codigo = StringUtils.leftPad(Codigolinha, 10, "0");
-
-        return codigo;
+        return StringUtils.leftPad(Codigolinha, 10, "0");
     }
 
     //VALIDACOES
@@ -249,9 +247,7 @@ public class LinhaService {
     }
 
     public boolean existsByCodigolinha (String codigolinha){
-        boolean existsByCodigolinha = this.iLinhaRepository.existsByCodigolinha(codigolinha);
-
-        return existsByCodigolinha;
+        return this.iLinhaRepository.existsByCodigolinha(codigolinha);
     }
 
     public Linha findByCodigoLinha(String codigolinha) {
