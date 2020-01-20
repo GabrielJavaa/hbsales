@@ -1,7 +1,6 @@
 package br.com.hbsis.pedido;
 
 import br.com.hbsis.item.ItemDTO;
-import br.com.hbsis.produto.Produto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,18 +11,17 @@ public class PedidoDTO {
     private String statusPedido;
     private LocalDate dataCriacaoPedido;
     private Long fornecedor;
-    private Produto produto;
+
     private Long periodo;
     private Long funcionario;
     private List<ItemDTO> itemDTOS;
 
-    public PedidoDTO(Long id, String codigoUnico, String statusPedido, LocalDate dataCriacaoPedido, Long fornecedor, Produto produto, Long periodo, Long funcionario) {
+    public PedidoDTO(Long id, String codigoUnico, String statusPedido, LocalDate dataCriacaoPedido, Long fornecedor, Long periodo, Long funcionario) {
         this.id = id;
         this.codigoUnico = codigoUnico;
         this.statusPedido = statusPedido;
         this.dataCriacaoPedido = dataCriacaoPedido;
         this.fornecedor = fornecedor;
-        this.produto = produto;
         this.periodo = periodo;
         this.funcionario = funcionario;
     }
@@ -34,7 +32,6 @@ public class PedidoDTO {
                 pedido.getStatusPedido(),
                 pedido.getDataCriacaoPedido(),
                 pedido.getFornecedor().getId(),
-                pedido.getProduto(),
                 pedido.getPeriodo().getId(),
                 pedido.getFuncionario().getId()
 
@@ -79,14 +76,6 @@ public class PedidoDTO {
 
     public void setFornecedor(Long fornecedor) {
         this.fornecedor = fornecedor;
-    }
-
-    public Produto getProduto() {
-        return produto;
-    }
-
-    public void setProduto(Produto produto) {
-        this.produto = produto;
     }
 
     public Long getPeriodo() {

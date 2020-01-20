@@ -81,12 +81,12 @@ public class PedidoService {
         pedido.setDataCriacaoPedido(LocalDate.now());
         pedido.setFornecedor(fornecedor);
         pedido.setPeriodo(periodo);
-        pedido.setProduto(pedidoDTO.getProduto());
         pedido.setFuncionario(funcionario);
 
-        this.iRepositoryPedido.save(pedido);
+
 
         if (validateInvoice(pedido.getFornecedor().getCnpj(), pedido.getFuncionario().getUuid(), dadosItem(pedidoDTO.getItemDTOS(),pedido), totalValor(pedidoDTO.getItemDTOS()))){
+            this.iRepositoryPedido.save(pedido);
             for (ItemDTO itemDTO : pedidoDTO.getItemDTOS()){
                 Item item = new Item();
                 itemDTO.setPedido(pedido.getId());
@@ -122,7 +122,6 @@ public class PedidoService {
             pedidoOptional.setDataCriacaoPedido(LocalDate.now());
             pedidoOptional.setFornecedor(fornecedor);
             pedidoOptional.setPeriodo(periodo);
-            pedidoOptional.setProduto(pedidoDTO.getProduto());
 
             this.iRepositoryPedido.save(pedidoOptional);
             return PedidoDTO.of(pedidoOptional);
