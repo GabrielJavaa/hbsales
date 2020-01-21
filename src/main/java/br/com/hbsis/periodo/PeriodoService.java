@@ -47,7 +47,6 @@ public class PeriodoService {
             periodo = this.iPeriodoRepository.save(periodo);
             return PeriodoDTO.of(periodo);
     }
-
     //VALIDAÇAO
     public void validate(PeriodoDTO periodoDTO){
         LOGGER.info("Validando produto");
@@ -71,7 +70,6 @@ public class PeriodoService {
             throw new IllegalArgumentException(String.format("Descrição %s não pode ser nulo"));
         }
     }
-
     //PESQUISA
     public PeriodoDTO findById(Long id){
         Optional<Periodo> periodoOptional = this.iPeriodoRepository.findById(id);
@@ -81,12 +79,12 @@ public class PeriodoService {
         }
         throw new IllegalArgumentException(String.format("Periodo %s não existe",id));
     }
-    public Periodo findByPeriodoId(Long id){
-        Optional<Periodo> periodoOptional = this.iPeriodoRepository.findById(id);
-        if (periodoOptional.isPresent()){
+    public Periodo findByPeriodo( Long id){
+        Optional <Periodo> periodoOptional = this.iPeriodoRepository.findById(id);
+        if (periodoOptional.isPresent()) {
             return periodoOptional.get();
         }
-        throw new IllegalArgumentException(String.format("Periodo %s inexistente",id));
+        throw new IllegalArgumentException(String.format("id %s nao existe", id));
     }
 
     //ALTERAR
@@ -141,4 +139,5 @@ public class PeriodoService {
             }
         }
     }
+
 }

@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface IPeriodoRepository extends JpaRepository<Periodo, Long> {
     List<Periodo> findByFornecedor(Fornecedor fornecedor);
+
+
 }
