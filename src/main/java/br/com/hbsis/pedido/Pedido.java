@@ -30,6 +30,7 @@ public class Pedido {
     @JoinColumn(name = "funcionarioid", referencedColumnName = "id")
     private Funcionario funcionario;
 
+
     public Long getId() {
         return id;
     }
@@ -85,4 +86,7 @@ public class Pedido {
     public void setFuncionario(Funcionario funcionario) {
         this.funcionario = funcionario;
     }
+
+
 }
+

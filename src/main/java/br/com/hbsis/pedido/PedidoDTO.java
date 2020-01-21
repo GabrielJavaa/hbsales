@@ -11,10 +11,10 @@ public class PedidoDTO {
     private String statusPedido;
     private LocalDate dataCriacaoPedido;
     private Long fornecedor;
-
     private Long periodo;
     private Long funcionario;
     private List<ItemDTO> itemDTOS;
+
 
     public PedidoDTO(Long id, String codigoUnico, String statusPedido, LocalDate dataCriacaoPedido, Long fornecedor, Long periodo, Long funcionario) {
         this.id = id;
@@ -34,6 +34,7 @@ public class PedidoDTO {
                 pedido.getFornecedor().getId(),
                 pedido.getPeriodo().getId(),
                 pedido.getFuncionario().getId()
+
 
         );
     }
@@ -101,4 +102,5 @@ public class PedidoDTO {
     public void setItemDTOS(List<ItemDTO> itemDTOS) {
         this.itemDTOS = itemDTOS;
     }
+
 }

@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/pedido")
 public class PedidoRest {
@@ -35,5 +37,9 @@ public class PedidoRest {
         LOGGER.debug("Recebendo {}", pedidoDTO);
 
         return this.pedidoService.update(pedidoDTO, id);
+    }
+    @GetMapping("/export.csv/{id}")
+    public void exportCSV(HttpServletResponse file,@PathVariable ("id") Long id) throws Exception {
+        pedidoService.escreverPedido(file, id);
     }
 }

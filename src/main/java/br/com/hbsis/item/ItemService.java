@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,7 +19,7 @@ public class ItemService {
     private final PedidoService pedidoService;
     private final ProdutoService produtoService;
 
-    public ItemService(IItemRepository iItemRepository, PedidoService pedidoService, ProdutoService produtoService) {
+    public ItemService(IItemRepository iItemRepository,  PedidoService pedidoService, ProdutoService produtoService) {
         this.iItemRepository = iItemRepository;
         this.pedidoService = pedidoService;
         this.produtoService = produtoService;
@@ -48,6 +49,14 @@ public class ItemService {
         }
         throw new IllegalArgumentException(String.format("id %s nao existe",id));
     }
+    public List<Item> findByItemId(Pedido pedido){
+        List<Item> items = this.iItemRepository.findAllByPedido(pedido);
+        if (items != null ){
+            return items;
+        }
+        throw new IllegalArgumentException(String.format("id %s nao existe"));
+    }
+
 
     public ItemDTO update(ItemDTO itemDTO, Long id){
         this.validate(itemDTO);
