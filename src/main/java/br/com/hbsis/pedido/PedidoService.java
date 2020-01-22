@@ -193,7 +193,16 @@ public class PedidoService {
         }
         return pedidoList;
     }
-    //export
+    public List<Pedido> findByFucionario(Funcionario funcionario){
+        List<Pedido> listPedido = new ArrayList<>();
+        try{
+            listPedido = iRepositoryPedido.findByFuncionario(funcionario);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return listPedido;
+    }
+    //export quantidade de produtos
     void escreverPedido (HttpServletResponse response, Long id ) throws Exception{
         String nomeArquivo = "arquivoProduto.csv";
         response.setContentType("text/csv");
@@ -232,5 +241,35 @@ public class PedidoService {
                 + cnpj.substring(8, 12) + "-"
                 + cnpj.substring(12, 14));
         return mask;
+    }
+
+    //export venda de produtos
+
+    void escreverVendaProduto (HttpServletResponse response, Long id ) throws Exception {
+        String nomeArquivo = "arquivoProduto.csv";
+        response.setContentType("text/csv");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + nomeArquivo + "\"");
+
+        PrintWriter escritor = response.getWriter();
+
+        ICSVWriter icsvWriter = new CSVWriterBuilder(escritor).withSeparator(';').withEscapeChar(
+                CSVWriter.DEFAULT_ESCAPE_CHARACTER).
+                withLineEnd(CSVWriter.DEFAULT_LINE_END).build();
+        String[] tituloCSV = {"nomeFuncionario, nomeProduto, quantidade, fornecedor"};
+        icsvWriter.writeNext(tituloCSV);
+
+        Funcionario funcionario;
+        funcionario = funcionarioService.findByFuncionarioId(id);
+
+        List<Pedido> pedidoList;
+        List<Item> itemList;
+        pedidoList = iRepositoryPedido.findByFuncionario(funcionario);
+        for (Pedido pedido: pedidoList){
+            itemList = itemService.findByItemId(pedido);
+            for (Item item: itemList)
+                icsvWriter.writeNext(new String[]{pedido.getFuncionario().getNomeFuncionario(), item.getProduto().getNome(), String.valueOf(item.getQuantidade()), pedido.getFornecedor().getRazaoSocial()+formatarCnpj(pedido.getFornecedor().getCnpj())});
+
+        }
+
     }
 }
