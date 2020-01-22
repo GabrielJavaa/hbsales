@@ -92,9 +92,6 @@ public class PedidoService {
         pedido.setPeriodo(periodo);
         pedido.setFuncionario(funcionario);
 
-
-
-
         if (validateInvoice(pedido.getFornecedor().getCnpj(), pedido.getFuncionario().getUuid(), dadosItem(pedidoDTO.getItemDTOS(),pedido), totalValor(pedidoDTO.getItemDTOS()))){
             this.iRepositoryPedido.save(pedido);
             for (ItemDTO itemDTO : pedidoDTO.getItemDTOS()){
@@ -272,4 +269,41 @@ public class PedidoService {
         }
 
     }
+
+    public List <PedidoDTO> findAllPedidos(Long id){
+         Funcionario funcionario;
+         funcionario = funcionarioService.findByFuncionarioId(id);
+
+         List<Pedido> pedidos;
+         pedidos = iRepositoryPedido.findByFuncionario(funcionario);
+
+         List<PedidoDTO> pedidoDTOList = new ArrayList<>();
+
+         for (Pedido pedido : pedidos){
+             try{
+                 if (pedido.getStatusPedido().equals("Ativo") || pedido.getStatusPedido().equals("Retirado")){
+
+                 LOGGER.info("Pedidos",PedidoDTO.of(pedido));
+                 pedidoDTOList.add(PedidoDTO.of(pedido));
+                 }else if (!pedido.getStatusPedido().equals("Ativo") || !pedido.getStatusPedido().equals("Retirado")){
+                     LOGGER.info("Pedido Cancelado");
+                 }
+             }catch (Exception e){
+                 e.printStackTrace();
+             }
+         }
+         return pedidoDTOList;
+    }
+//    public void statusPedido(PedidoDTO pedidoDTO){
+//        switch (pedidoDTO.getStatusPedido().toUpperCase()){
+//            case "ATIVO":
+//                LOGGER.info("ATIVO");
+//            case "Cancelado":
+//                LOGGER.info("Cancelado");
+//            case "Retirado":
+//                LOGGER.info("Retirado");
+//                break;
+//            default:
+//        }
+//    }
 }
