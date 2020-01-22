@@ -42,4 +42,8 @@ public class PedidoRest {
     public void exportCSV(HttpServletResponse file,@PathVariable ("id") Long id) throws Exception {
         pedidoService.escreverPedido(file, id);
     }
+    @GetMapping("/exportCSV/{id}")
+    public void exportProdutoCSV(HttpServletResponse file,@PathVariable ("id") Long id) throws Exception {
+        pedidoService.escreverVendaProduto(file, id);
+    }
 }
