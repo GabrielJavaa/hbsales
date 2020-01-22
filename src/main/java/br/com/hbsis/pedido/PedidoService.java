@@ -332,6 +332,41 @@ public class PedidoService {
         throw new IllegalArgumentException(String.format("ID: %s n/e ",id));
     }
 
+    public void validaEditarPedido(PedidoDTO pedidoDTO, Long id){
+        Optional<Pedido> pedidoOptional = this.iRepositoryPedido.findById(id);
 
+        pedidoDTO.setStatusPedido("Ativo");
+        pedidoDTO.setDataCriacaoPedido(LocalDate.now());
+        if (pedidoOptional.isPresent()) {
+            Pedido pedido = pedidoOptional.get();
+            if (pedido.getStatusPedido().equals("Cacelado")) {
+                throw new IllegalArgumentException(String.format("Pedido ja Cancelado, nao pode ser alterado", id));
+            }
+            if (pedido.getStatusPedido().equals("Retirado")) {
+                throw new IllegalArgumentException(String.format("pedido ja retirado, não pode ser alterado", id));
+            }
+            if (pedido.getDataCriacaoPedido().isBefore(pedido.getPeriodo().getDataFimVendas())){
+                throw new IllegalArgumentException(String.format("periodo de vendas fechado, pedido nao pode ser mais alterado", id));
+            }
+        }
+    }
+
+    public PedidoDTO editaPedido(PedidoDTO pedidoDTO, Long id){
+        Optional<Pedido> pedidoOptional = this.iRepositoryPedido.findById(id);
+
+        this.validaEditarPedido(pedidoDTO,id);
+
+        if (pedidoOptional.isPresent()){
+            Pedido pedido = pedidoOptional.get();
+            LOGGER.info("editanto pedido id:[{}]", pedido.getId());
+            LOGGER.debug("payload: {}",pedidoDTO);
+
+            pedido.setStatusPedido(pedidoDTO.getStatusPedido());
+            pedido.setDataCriacaoPedido(LocalDate.now());
+            pedido = this.iRepositoryPedido.save(pedido);
+            return PedidoDTO.of(pedido);
+        }
+        throw new IllegalArgumentException(String.format("id %s n/e",id));
+    }
 
 }
