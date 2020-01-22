@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @RestController
 @RequestMapping("/pedido")
@@ -45,5 +46,10 @@ public class PedidoRest {
     @GetMapping("/exportCSV/{id}")
     public void exportProdutoCSV(HttpServletResponse file,@PathVariable ("id") Long id) throws Exception {
         pedidoService.escreverVendaProduto(file, id);
+    }
+    @GetMapping("/pedido/{id}")
+    public List<PedidoDTO> findPedido(@PathVariable("id") Long id){
+        LOGGER.info("Buscando pedidos pelo id : [{}]", id);
+        return this.pedidoService.findAllPedidos(id);
     }
 }
