@@ -294,16 +294,44 @@ public class PedidoService {
          }
          return pedidoDTOList;
     }
-//    public void statusPedido(PedidoDTO pedidoDTO){
-//        switch (pedidoDTO.getStatusPedido().toUpperCase()){
-//            case "ATIVO":
-//                LOGGER.info("ATIVO");
-//            case "Cancelado":
-//                LOGGER.info("Cancelado");
-//            case "Retirado":
-//                LOGGER.info("Retirado");
-//                break;
-//            default:
-//        }
-//    }
+    public void validaCancelaPedido(PedidoDTO pedidoDTO, Long id){
+        Optional<Pedido> pedidoOptional = this.iRepositoryPedido.findById(id);
+
+
+        pedidoDTO.setStatusPedido("Cancelado");
+        pedidoDTO.setDataCriacaoPedido(LocalDate.now());
+        if (pedidoOptional.isPresent()) {
+            Pedido pedido = pedidoOptional.get();
+            if (pedido.getStatusPedido().equals("Cancelado")) {
+                throw new IllegalArgumentException(String.format("Pedido já Cancelado", id));
+            }
+            if (pedido.getStatusPedido().equals("Retirado")) {
+                throw new IllegalArgumentException(String.format("pedido nao pode ser Cancelado", id));
+            }
+            if (pedido.getDataCriacaoPedido().isAfter(pedido.getPeriodo().getDataFimVendas())){
+                throw new IllegalArgumentException(String.format("periodo de vendas fechado, pedido nao pode ser mais alterado", id));
+            }
+        }
+    }
+    public PedidoDTO cancelaPedido(PedidoDTO pedidoDTO, Long id){
+
+        Optional<Pedido> pedidoOptional = this.iRepositoryPedido.findById(id);
+
+        this.validaCancelaPedido(pedidoDTO,id);
+
+        if (pedidoOptional.isPresent()){
+            Pedido pedido = pedidoOptional.get();
+            LOGGER.info("Att pedido id:[{}]", pedido.getId());
+            LOGGER.debug("payload: {}", pedidoDTO);
+
+            pedido.setStatusPedido(pedidoDTO.getStatusPedido());
+            pedido.setDataCriacaoPedido(LocalDate.now());
+            pedido = this.iRepositoryPedido.save(pedido);
+            return PedidoDTO.of(pedido);
+        }
+        throw new IllegalArgumentException(String.format("ID: %s n/e ",id));
+    }
+
+
+
 }

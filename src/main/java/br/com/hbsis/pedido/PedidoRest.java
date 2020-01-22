@@ -52,4 +52,11 @@ public class PedidoRest {
         LOGGER.info("Buscando pedidos pelo id : [{}]", id);
         return this.pedidoService.findAllPedidos(id);
     }
+    @PutMapping("/cancelaPedido/{id}")
+    public PedidoDTO updateCancela(@PathVariable ("id") Long id, PedidoDTO pedidoDTO){
+        LOGGER.info("Alterando pedidos pelo id... id: [{}]", id);
+        LOGGER.debug("Recebendo {}", pedidoDTO);
+
+        return this.pedidoService.cancelaPedido(pedidoDTO, id);
+    }
 }
