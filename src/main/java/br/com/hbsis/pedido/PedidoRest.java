@@ -65,4 +65,10 @@ public class PedidoRest {
         LOGGER.debug("Recebendo {}",pedidoDTO);
         return this.pedidoService.editaPedido(pedidoDTO,id);
     }
+    @PutMapping("/retiradaPedido/{id}")
+    public PedidoDTO updateRetirado(@PathVariable ("id") Long id, PedidoDTO pedidoDTO){
+        LOGGER.info("Editanto periodo id: [{}]", id);
+        LOGGER.debug("Recebendo {}",pedidoDTO);
+        return this.pedidoService.retiradaPedido(pedidoDTO,id);
+    }
 }

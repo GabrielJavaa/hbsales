@@ -1,5 +1,6 @@
 package br.com.hbsis.pedido;
 
+import br.com.hbsis.email.Email;
 import br.com.hbsis.fornecedor.Fornecedor;
 import br.com.hbsis.fornecedor.FornecedorService;
 import br.com.hbsis.funcionario.Funcionario;
@@ -43,15 +44,16 @@ public class PedidoService {
     private final ProdutoService produtoService;
     private final FuncionarioService funcionarioService;
     private final ItemService itemService;
+    private final Email email;
 
-
-    public PedidoService(IRepositoryPedido iRepositoryPedido, PeriodoService periodoService, FornecedorService fornecedorService, ProdutoService produtoService, FuncionarioService funcionarioService,@Lazy ItemService itemService) {
+    public PedidoService(IRepositoryPedido iRepositoryPedido, PeriodoService periodoService, FornecedorService fornecedorService, ProdutoService produtoService, FuncionarioService funcionarioService, @Lazy ItemService itemService, Email email) {
         this.iRepositoryPedido = iRepositoryPedido;
         this.periodoService = periodoService;
         this.fornecedorService = fornecedorService;
         this.produtoService = produtoService;
         this.funcionarioService = funcionarioService;
         this.itemService = itemService;
+        this.email = email;
     }
 
     public PedidoDTO findById(Long id) {
@@ -103,7 +105,9 @@ public class PedidoService {
                 item.setQuantidade(itemDTO.getQuantidade());
 
                 items.add(item);
+
             }
+//            this.email.sendMail(pedido);
             }else{
             throw new IllegalArgumentException("conexao com a API falhou");
         }
@@ -355,6 +359,40 @@ public class PedidoService {
         Optional<Pedido> pedidoOptional = this.iRepositoryPedido.findById(id);
 
         this.validaEditarPedido(pedidoDTO,id);
+
+        if (pedidoOptional.isPresent()){
+            Pedido pedido = pedidoOptional.get();
+            LOGGER.info("editanto pedido id:[{}]", pedido.getId());
+            LOGGER.debug("payload: {}",pedidoDTO);
+
+            pedido.setStatusPedido(pedidoDTO.getStatusPedido());
+            pedido.setDataCriacaoPedido(LocalDate.now());
+            pedido = this.iRepositoryPedido.save(pedido);
+            return PedidoDTO.of(pedido);
+        }
+        throw new IllegalArgumentException(String.format("id %s n/e",id));
+    }
+
+    public void validaRetiradaPedido(PedidoDTO pedidoDTO, Long id){
+        Optional<Pedido> pedidoOptional = this.iRepositoryPedido.findById(id);
+
+        pedidoDTO.setStatusPedido("Retirado");
+        pedidoDTO.setDataCriacaoPedido(LocalDate.now());
+        if (pedidoOptional.isPresent()){
+            Pedido pedido = pedidoOptional.get();
+            if (pedido.getStatusPedido().equals("Cancelado")) {
+                throw new IllegalArgumentException(String.format("Pedido ja Cancelado, nao pode ser retirado", id));
+            }
+            if (pedido.getStatusPedido().equals("Retirado")) {
+                throw new IllegalArgumentException(String.format("pedido Retirado com sucesso", id));
+            }
+
+        }
+    }
+    public PedidoDTO retiradaPedido(PedidoDTO pedidoDTO, Long id){
+        Optional<Pedido> pedidoOptional = this.iRepositoryPedido.findById(id);
+
+        this.validaRetiradaPedido(pedidoDTO,id);
 
         if (pedidoOptional.isPresent()){
             Pedido pedido = pedidoOptional.get();
