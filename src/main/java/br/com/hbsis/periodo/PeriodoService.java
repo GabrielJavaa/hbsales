@@ -94,7 +94,7 @@ public class PeriodoService {
         if (periodoExistenteOptional.isPresent()){
             Periodo periodoExistente = periodoExistenteOptional.get();
 
-            this.validacaoUpdate(periodoDTO);
+            this.validacaoUpdate(periodoExistente);
 
             LOGGER.info("Atualizando usuário... id: [{}]", periodoExistente.getId());
             LOGGER.debug("Payload: {}", periodoDTO);
@@ -112,9 +112,9 @@ public class PeriodoService {
         throw new IllegalArgumentException(String.format("id %s do fornecedor não existe", id));
     }
 
-    public void validacaoUpdate (PeriodoDTO periodoDTO){
+    public void validacaoUpdate (Periodo periodoExistente){
         LocalDate hoje = LocalDate.now();
-        if (periodoDTO.getDataFimVendas().isAfter(hoje)){
+        if (periodoExistente.getDataFimVendas().isBefore(hoje)){
             LOGGER.info("O periodo do pedido nao pode ser alterado");
         }
     }
@@ -131,12 +131,14 @@ public class PeriodoService {
         List<Periodo> periodoExistentes = iPeriodoRepository.findByFornecedor(fornecedor);
 
         for (Periodo periodo : periodoExistentes) {
-            if (periodoDTO.getDataInicioVendas().isBefore(periodo.getDataFimVendas())){
+            if (periodoDTO.getDataInicioVendas().isBefore(periodo.getDataFimVendas()) && (periodoDTO.getDataFimVendas().isAfter(periodo.getDataFimVendas()))){
                 throw new IllegalArgumentException("se o periodo final terminar entre os periodos existentes3");
-
-            }if (periodoDTO.getDataFimVendas().isBefore(periodo.getDataFimVendas())) {
+            }if (periodoDTO.getDataFimVendas().isBefore(periodo.getDataFimVendas())&&(periodoDTO.getDataInicioVendas().isBefore(periodo.getDataInicioVendas()))) {
                 throw new IllegalArgumentException("se o periodo inicial ja existe entre os periodos");
+            }if (periodoDTO.getDataInicioVendas().isBefore(periodo.getDataInicioVendas()) && (periodoDTO.getDataFimVendas().isAfter(periodo.getDataFimVendas()))){
+                throw new IllegalArgumentException("o periodo nao pode ser criando durante um periodo de venda existente");
             }
+
         }
     }
 
